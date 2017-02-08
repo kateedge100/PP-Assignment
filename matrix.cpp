@@ -14,7 +14,7 @@ Matrix< T,COLS,ROWS>::Matrix() // DEFAULT CONSTRUCTOR
     {
        for (int c=0; c < COLS; ++c)
        {
-           //data[row][col] = 0.0;
+           m_data[r][c]=T();
        }
     }
 
@@ -31,26 +31,33 @@ T* Matrix< T, COLS, ROWS>::data()
 
 
 template <typename T, int COLS, int ROWS>
-T& Matrix< T,COLS,ROWS>::operator()(int row, int col)
+T& Matrix< T,COLS,ROWS>::operator()(T rowValue, T colValue)
 {
 //    assert(col >= 0 && col < 4);
 //    assert(row >= 0 && row < 4);
 
       // throw error if rows or cols out of range
 
-    return data[row][col];
+    T data[ROWS][COLS];
+
+    // assign inputed data to privae data attribute
+    m_data[rowValue][colValue] = data[rowValue][colValue];
+
+    return data[rowValue][colValue];
 }
 
 template <typename T, int COLS, int ROWS>
-const T& Matrix< T,COLS,ROWS>::operator()(int row, int col) const
+const T& Matrix< T,COLS,ROWS>::operator()(T rowValue, T colValue) const
 {
 //    assert(col >= 0 && col < 4);
 //    assert(row >= 0 && row < 4);
 
-    // assign inputed data to privae data attribute
-    m_data[row][col] = data[row][col];
+    T data[ROWS][COLS];
 
-    return data[row][col];
+    // assign inputed data to privae data attribute
+    m_data[rowValue][colValue] = data[rowValue][colValue];
+
+    return data[rowValue][colValue];
 }
 
 

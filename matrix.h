@@ -31,8 +31,8 @@ public:
 
     //code referenced from http://www.learncpp.com/cpp-tutorial/99-overloading-the-parenthesis-operator/
     // overload operator
-    T& operator()(int row, int col);
-    const T& operator()(int row, int col) const; // for const objects
+    T& operator()(T rowValue, T colValue);
+    const T& operator()(T rowValue, T colValue) const; // for const objects
 
 
 
