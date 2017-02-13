@@ -8,7 +8,8 @@ class Array
 {
     private :
         // our array data
-        T m_data[ROWS][COLS];
+        T m_data[COLS][ROWS];
+
         // function to check for a valid array range.
         void rangeCheck(std::size_t rowidx, std::size_t colidx);
 
@@ -30,18 +31,7 @@ class Array
     const T* data() const { return m_data; }
     T* data() { return *m_data; }
 
-    T print() {
-        for(int i = 0; i<COLS; i++)
-          {
-              for(int j = 0; j<ROWS; j++)
-              {
-                  std::cout<<m_data[i][j]<<" ";
-
-              }
-              std::cout<<"\n";
-
-          }
-    }
+    void print();
 
     Array<T,ROWS,COLS>& operator= (const Array<T,ROWS,COLS>& rhs);
 
@@ -104,7 +94,9 @@ Array< T,ROWS,COLS>::Array(std::initializer_list<T> data)
 //        for(int j = 0; j<ROWS; j++)
 //        {
 //            &m_data[i][j]=data;
+    {
 
+        }
 //        }
 
 //    }
@@ -142,6 +134,21 @@ const T& Array< T,ROWS,COLS>::operator()(std::size_t rowidx,std::size_t colidx) 
 {
     rangeCheck(rowidx,colidx);
   return const_cast<T&>(m_data[rowidx][colidx]);
+}
+
+template <typename T, size_t ROWS, size_t COLS>
+void Array< T,ROWS,COLS>::print()
+{
+    for(int i = 0; i<ROWS; i++)
+      {
+          for(int j = 0; j<COLS; j++)
+          {
+              std::cout<<m_data[i][j]<<" ";
+
+          }
+          std::cout<<"\n";
+
+      }
 }
 
 
