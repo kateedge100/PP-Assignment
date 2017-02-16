@@ -15,7 +15,7 @@ private:
     // column size
     int m_cols=COLS;
 
-    T m_data[COLS][ROWS];
+    T m_data[ROWS][COLS];
 
     // function to check for a valid array range.
     void rangeCheck(std::size_t rowidx, std::size_t colidx);
@@ -25,6 +25,7 @@ public:
     // contructor will set data to zero
     Matrix();
 
+   // copy constructor
     Matrix(std::initializer_list<T> data);
 
     // read only returns number of rows
@@ -50,7 +51,7 @@ public:
     //const T& operator[](int index) const ;
 
     // assignment operator
-    Matrix<T,ROWS,COLS>& operator= (const Matrix<T,ROWS,COLS>& rhs);
+    Matrix& operator= (const Matrix<T,ROWS,COLS>& rhs);
 
     void print();
 
@@ -103,13 +104,21 @@ Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 //    }
 }
 
+
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>& rhs)
 {
+
+    if( rhs.m_rows!=m_rows)
+        throw std::out_of_range("Must have the same number of rows");
+
+    if( rhs.m_cols!=m_cols)
+        throw std::out_of_range("Must have the same number of colomns");
+
     //std::copy(rhs.begin(),rhs.end(), begin());
-    for(int i=0; i<COLS; i++)
+    for(int i=0; i<ROWS; i++)
     {
-        for(int j=0; j<ROWS; j++)
+        for(int j=0; j<COLS; j++)
         {
           m_data[i][j]=rhs.m_data[i][j];
 
@@ -157,9 +166,9 @@ const T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowidx,std::size_t colidx)
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix< T,ROWS,COLS>::print()
 {
-    for(int i = 0; i<COLS; i++)
+    for(int i = 0; i<ROWS; i++)
       {
-          for(int j = 0; j<ROWS; j++)
+          for(int j = 0; j<COLS; j++)
           {
               std::cout<<m_data[i][j]<<" ";
 
@@ -167,6 +176,7 @@ void Matrix< T,ROWS,COLS>::print()
           std::cout<<"\n";
 
       }
+    std::cout<<"\n";
 }
 
 
