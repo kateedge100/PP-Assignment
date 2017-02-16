@@ -1,63 +1,84 @@
 #include "matrix.h"
-
-
-
-template <typename T, int COLS, int ROWS>
-Matrix< T,COLS,ROWS>::Matrix() // DEFAULT CONSTRUCTOR
-{
-    // default matrix types
-     Matrix<int,2,2> Matrix2f;
-     Matrix<int,3,3> Matrix3f;
-     Matrix<int,4,4> Matrix4f;
-
-    for (int r=0; r < ROWS; ++r)
-    {
-       for (int c=0; c < COLS; ++c)
-       {
-           m_data[r][c]=T();
-       }
-    }
-
-}
-
-template <typename T, int COLS, int ROWS>
-T* Matrix< T, COLS, ROWS>::data()
-{
-    return m_data;
-}
+#include <stdexcept>
+#include <algorithm>
+#include <iostream>
 
 
 
 
 
-template <typename T, int COLS, int ROWS>
-T& Matrix< T,COLS,ROWS>::operator()(T rowValue, T colValue)
-{
-//    assert(col >= 0 && col < 4);
-//    assert(row >= 0 && row < 4);
 
-      // throw error if rows or cols out of range
 
-    T data[ROWS][COLS];
+//template <typename T, size_t ROWS, size_t COLS>
+//Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>& rhs)
+//{
+//    //std::copy(rhs.begin(),rhs.end(), begin());
+//    for(int i=0; i<COLS; i++)
+//    {
+//        for(int j=0; j<ROWS; j++)
+//        {
+//          m_data[i][j]=rhs.m_data[i][j];
 
-    // assign inputed data to privae data attribute
-    m_data[rowValue][colValue] = data[rowValue][colValue];
+//        }
 
-    return data[rowValue][colValue];
-}
+//    }
 
-template <typename T, int COLS, int ROWS>
-const T& Matrix< T,COLS,ROWS>::operator()(T rowValue, T colValue) const
-{
-//    assert(col >= 0 && col < 4);
-//    assert(row >= 0 && row < 4);
+//    return *this;
+//}
 
-    T data[ROWS][COLS];
+//template <typename T, size_t ROWS, size_t COLS>
+//T* Matrix< T, ROWS, COLS>::data()
+//{
 
-    // assign inputed data to privae data attribute
-    m_data[rowValue][colValue] = data[rowValue][colValue];
+//            return m_data;
 
-    return data[rowValue][colValue];
-}
+
+//}
+
+//template <typename T, size_t ROWS, size_t COLS>
+//void Matrix<T,ROWS,COLS> ::operator= (const Matrix<T,ROWS,COLS> &m)
+//{
+//    for(int i = 0; i< ROWS*COLS; i++)
+//    {
+//        m_data=m.data();
+//    }
+
+//    return *this;
+
+//}
+
+
+
+
+
+//template <typename T, int ROWS, int COLS>
+//T& Matrix< T,ROWS,COLS>::operator()(int rowValue,int colValue)
+//{
+////    assert(col >= 0 && col < 4);
+////    assert(row >= 0 && row < 4);
+
+//      // throw error if rows or cols out of range
+
+//    //T data[ROWS][COLS];
+
+//    // assign inputed data to privae data attribute
+//    //m_data[rowValue][colValue] = data[rowValue][colValue];
+
+//    return data[rowValue][colValue];
+//}
+
+//template <typename T, int ROWS, int COLS>
+//const T& Matrix< T,ROWS, COLS>::operator()(int rowValue, int colValue) const
+//{
+////    assert(col >= 0 && col < 4);
+////    assert(row >= 0 && row < 4);
+
+//    //T data[ROWS][COLS];
+
+//    // assign inputed data to privae data attribute
+//    //m_data[rowValue][colValue] = data[rowValue][colValue];
+
+//    return data[rowValue][colValue];
+//}
 
 
