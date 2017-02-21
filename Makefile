@@ -48,10 +48,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp \
-		matrix.cpp 
-OBJECTS       = main.o \
-		matrix.o
+SOURCES       = main.cpp 
+OBJECTS       = main.o
 DIST          = /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -187,6 +185,7 @@ DIST          = /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -198,8 +197,7 @@ DIST          = /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/exceptions.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf \
-		mathsLibrary.pro matrix.h main.cpp \
-		matrix.cpp
+		mathsLibrary.pro matrix.h main.cpp
 QMAKE_TARGET  = mathsLibrary
 DESTDIR       = 
 TARGET        = mathsLibrary
@@ -346,6 +344,7 @@ Makefile: mathsLibrary.pro /opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf 
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -494,6 +493,7 @@ Makefile: mathsLibrary.pro /opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf 
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/qt_config.prf:
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++/qmake.conf:
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/exclusive_builds.prf:
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/default_pre.prf:
 /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/resolve_config.prf:
@@ -551,9 +551,6 @@ compiler_clean:
 
 main.o: main.cpp matrix.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
-
-matrix.o: matrix.cpp matrix.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matrix.o matrix.cpp
 
 ####### Install
 
