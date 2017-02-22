@@ -7,6 +7,7 @@
 #define PI 3.14159265359
 
 template <typename T, size_t ROWS=0, size_t COLS=0>
+
 class Matrix
 {
 private:
@@ -33,15 +34,18 @@ public:
    // copy constructor
     Matrix(std::initializer_list<T> data);
 
+    int getRows(){return m_rows;}
+    int getCols(){return m_cols;}
+
     // read only returns number of rows
     const int* rows() const { return m_rows; }
     // read only returns number of cols
     const int* cols() const { return m_cols; }
 
     // read only data
-    const T* data() const { return m_data; }
+    const T* data(int row, int col) const { return m_data[row][col]; }
     // accessible data
-    T* data() { return *m_data; }
+    T data(int row, int col) { return m_data[row][col]; }
 
     // this is constant so can be static
     static size_t size()  {return ROWS,COLS;}
@@ -76,7 +80,10 @@ public:
 
     /// Matrix only opertaion
     // multiply operator
-    Matrix<T,ROWS,COLS>& operator* (const Matrix<T,ROWS,COLS>& rhs);
+
+    template <size_t N>
+    Matrix<T, ROWS, COLS>
+    operator* ( Matrix<T,COLS,N>& rhs);
 
     /// Vector only methods
     float magnitude();
@@ -270,7 +277,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- ()
 
 //----------------------------------------------------------------------------------------------
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (const Matrix<T,ROWS,COLS>& rhs)
+template<size_t N>
+Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
 {
     // matrix-matrix multiplication
     if(m_vector == false)
@@ -278,14 +286,14 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (const Matrix<T,ROWS,COLS>&
 
 
 
-    if( COLS!=rhs.m_rows)
+    if( COLS!=rhs.getRows())
         throw std::out_of_range("number of columns of matrix 1 mustbe equil to number of rows of matrix 2");
 
     int i, j, k;
 
 
     // initialize tmp matrix values to 0
-    T tmp[rhs.m_rows][m_cols];
+    T tmp[rhs.getRows()][m_cols];
 
     for(int i=0; i<ROWS; i++)
     {
@@ -299,17 +307,19 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (const Matrix<T,ROWS,COLS>&
         // Multiplying matrices and storing values in matrix tmp
         for(i = 0; i < m_rows; ++i)
         {
-            for(j = 0; j < rhs.m_cols; ++j)
+            for(j = 0; j < rhs.getCols(); ++j)
             {
                 for(k=0; k<m_cols; ++k)
                 {
                     //std::cout<<m[i][j]<<"\n";
-                    tmp[i][j] += m_data[i][k] * rhs.m_data[k][j];
+                    tmp[i][j] += m_data[i][k] * rhs.data(k,j);
 
                     //std::cout<<m_data[i][k] * rhs.m_data[k][j]<<"\n";
                 }
             }
         }
+
+
 
         // assignning the tmp matrix's values to m_data
         for(int i=0; i<ROWS; i++)
@@ -322,6 +332,12 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (const Matrix<T,ROWS,COLS>&
 
         }
 
+
+
+
+
+
+
     return *this;
 
     }
@@ -331,7 +347,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (const Matrix<T,ROWS,COLS>&
     {
         for(int i = 0; i < COLS; i++)
         {
-            m_data[0][i]=m_data[0][i]*rhs.m_data[0][i];
+            m_data[0][i]=m_data[0][i]*rhs.data(0,i);
         }
 
         return *this;
@@ -386,11 +402,11 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T scalar)
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix<T,ROWS,COLS>::rangeCheck(std::size_t rowID,std::size_t colID)
 {
-    if( rowID!=ROWS)
-        throw std::out_of_range("row out of range");
+//    if( rowID!=ROWS)
+//        throw std::out_of_range("row out of range");
 
-    if( colID!=COLS)
-        throw std::out_of_range("column out of range");
+//    if( colID!=COLS)
+//        throw std::out_of_range("column out of range");
 }
 
 //----------------------------------------------------------------------------------------------
