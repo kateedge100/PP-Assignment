@@ -60,6 +60,13 @@ public:
 
     /// Matrix and Vector Operation
 
+    // assignment operator ( different sizes)
+
+    template <size_t N>
+    Matrix<T, ROWS, COLS>
+    operator= ( Matrix<T,ROWS,N>& rhs);
+
+
     // assignment operator
     Matrix& operator= (const Matrix<T,ROWS,COLS>& rhs);
     // addition operator
@@ -108,6 +115,7 @@ public:
 
 //----------------------------------------------------------------------------------------------
 
+/// Default constructor, sets all values to type T and equil to zero
 template <typename T, size_t ROWS, size_t COLS>
 Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
 {
@@ -120,10 +128,17 @@ Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
        }
     }
 
+    if(ROWS==1 || COLS==1)
+    {
+        m_vector=true;
+        //std::cout<<"is a vector \n";
+    }
+
 }
 
 //----------------------------------------------------------------------------------------------
 
+/// Copy constructor
 template <typename T, size_t ROWS, size_t COLS>
 Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 {
@@ -142,15 +157,40 @@ Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 
 //    }
 
-    if(ROWS==1)
+    if(ROWS==1 || COLS==1)
     {
         m_vector=true;
-        std::cout<<"is a vector \n";
+        //std::cout<<"is a vector \n";
     }
 }
 
 //----------------------------------------------------------------------------------------------
 
+/// Assignment operator, variable sized matrices (for matrix multiplication assignment)
+template <typename T, size_t ROWS, size_t COLS>
+template<size_t N>
+Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,ROWS, N>& rhs)
+{
+
+
+
+    for(int i=0; i<ROWS; i++)
+    {
+        for(int j=0; j<COLS; j++)
+        {
+          m_data[i][j]=rhs.data(i,j);
+
+        }
+
+    }
+
+    return *this;
+}
+
+
+//----------------------------------------------------------------------------------------------
+
+/// Assignment Operator
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>& rhs)
 {
@@ -172,6 +212,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>&
 
 //----------------------------------------------------------------------------------------------
 
+/// Addition operator for matrix/vector and matrix/vector addition
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (const Matrix<T,ROWS,COLS>& rhs)
 {
@@ -193,6 +234,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (const Matrix<T,ROWS,COLS>&
 
 //----------------------------------------------------------------------------------------------
 
+/// Addition operator for scalar and matrix/vector addition
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (T scalar)
 {
@@ -213,6 +255,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (T scalar)
 
 //----------------------------------------------------------------------------------------------
 
+/// Subtraction operator for matrix/vector and matrix/vector subtraction
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (const Matrix<T,ROWS,COLS>& rhs)
 {
@@ -234,6 +277,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (const Matrix<T,ROWS,COLS>&
 
 //----------------------------------------------------------------------------------------------
 
+/// Subtraction operator for matrix/vector and scalar subtration
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (T scalar)
 {
@@ -256,6 +300,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (T scalar)
 
 //----------------------------------------------------------------------------------------------
 
+/// Negative operator
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- ()
 {
@@ -276,6 +321,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- ()
 }
 
 //----------------------------------------------------------------------------------------------
+
+/// Matrix multiplication operator
 template <typename T, size_t ROWS, size_t COLS>
 template<size_t N>
 Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
@@ -338,7 +385,7 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
 
 
 
-    return *this;
+
 
     }
 
@@ -350,13 +397,16 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
             m_data[0][i]=m_data[0][i]*rhs.data(0,i);
         }
 
-        return *this;
+
     }
+
+    return *this;
 
 }
 
 //----------------------------------------------------------------------------------------------
 
+/// Multiplication opertor for matrix/vector and scalar
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (T scalar)
 {
@@ -378,6 +428,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (T scalar)
 
 //----------------------------------------------------------------------------------------------
 
+/// Division operator for matrix/vector and scalar
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T scalar)
 {
@@ -399,18 +450,20 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T scalar)
 
 //----------------------------------------------------------------------------------------------
 
+/// Checks rows and columns are in correct range
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix<T,ROWS,COLS>::rangeCheck(std::size_t rowID,std::size_t colID)
 {
-//    if( rowID!=ROWS)
-//        throw std::out_of_range("row out of range");
+    if( rowID!=ROWS)
+        throw std::out_of_range("row out of range");
 
-//    if( colID!=COLS)
-//        throw std::out_of_range("column out of range");
+    if( colID!=COLS)
+        throw std::out_of_range("column out of range");
 }
 
 //----------------------------------------------------------------------------------------------
 
+/// Checks that function is being applied to a vector not a matrix
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix<T,ROWS,COLS>::vectorCheck()
 {
@@ -421,6 +474,7 @@ void Matrix<T,ROWS,COLS>::vectorCheck()
 
 //----------------------------------------------------------------------------------------------
 
+/// Subscript operator used to view or edit values of matrix/vector based on row and column
 template <typename T, size_t ROWS, size_t COLS>
 T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowID,std::size_t colID)
 {
@@ -431,6 +485,7 @@ T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowID,std::size_t colID)
 
 //----------------------------------------------------------------------------------------------
 
+/// Subscript operator used to view values of matrix/vector based on row and column (read only)
 template <typename T, size_t ROWS, size_t COLS>
 const T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowID,std::size_t colID) const
 {
@@ -440,6 +495,7 @@ const T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowID,std::size_t colID) c
 
 //----------------------------------------------------------------------------------------------
 
+/// Division operator for matrix/vector and matrix/vector
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (const Matrix<T,ROWS,COLS>& rhs)
 {
@@ -547,6 +603,9 @@ float Matrix<T,ROWS,COLS>::angle( Matrix<T,ROWS,COLS>& rhs)
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 {
+    if( COLS !=3)
+        throw std::out_of_range("You must use a 3D vector for this function");
+
     vectorCheck();
     rhs.vectorCheck();
 
@@ -580,21 +639,17 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 //            break
 
     // assignning the tmp matrix's values to m_data
-    for(int i=0; i<ROWS; i++)
+    for(int i=0; i<COLS; i++)
     {
+
 
           m_data[0][i]=tmp[0][i];
 
-          std::cout<<m_data[0][i]<<"\n";
-
-
+          //std::cout<<m_data[0][i]<<"\n";
 
     }
 
     return *this;
-
-
-
 
 
 
