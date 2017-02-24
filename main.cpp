@@ -2,7 +2,10 @@
 #include <cstdlib>
 #include <string>
 #include "matrix.h"
-//#include <array>
+#include "quaternion.h"
+
+#include "NGLScene.h"
+#include <QtGui/QGuiApplication>
 
 // EDIT NUMBER OF COLS AFTER MULTIPLICATION EG 2X3 AND 3X2 SHOULD RESULT IN 2X2 MATRIX
 
@@ -22,6 +25,13 @@ int main()
 
 //    myMatrix=myMatrix*newMatrix;
 //    myMatrix.print();
+
+
+    Quaternion<int> q(2,3,4,5);
+    Quaternion<int> q2;
+    q2=q;
+
+    q2.print();
 
 
 

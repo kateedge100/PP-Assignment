@@ -48,10 +48,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = main.cpp \
-		quarternion.cpp 
-OBJECTS       = main.o \
-		quarternion.o
+SOURCES       = main.cpp 
+OBJECTS       = main.o
 DIST          = /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -200,8 +198,7 @@ DIST          = /opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/opt/Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf \
 		mathsLibrary.pro matrix.h \
-		quarternion.h main.cpp \
-		quarternion.cpp
+		quaternion.h main.cpp
 QMAKE_TARGET  = mathsLibrary
 DESTDIR       = 
 TARGET        = mathsLibrary
@@ -553,11 +550,9 @@ compiler_clean:
 
 ####### Compile
 
-main.o: main.cpp matrix.h
+main.o: main.cpp matrix.h \
+		quaternion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
-
-quarternion.o: quarternion.cpp quarternion.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o quarternion.o quarternion.cpp
 
 ####### Install
 

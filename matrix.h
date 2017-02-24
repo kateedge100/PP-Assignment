@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <iostream>
+#include "quaternion.h"
 
 #define PI 3.14159265359
 
