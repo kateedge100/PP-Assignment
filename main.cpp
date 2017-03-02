@@ -4,85 +4,53 @@
 #include "matrix.h"
 #include "quaternion.h"
 
-#include "NGLScene.h"
-#include <QtGui/QGuiApplication>
+// DO THIS STUFF FOR GOD SAKE
+
 
 // EDIT NUMBER OF COLS AFTER MULTIPLICATION EG 2X3 AND 3X2 SHOULD RESULT IN 2X2 MATRIX
+// ADD MULTIPLE MATRIX SIZES FOR CROSS PRODUCT
+// ADD MATRIX INVERSE
+// ADD QUATERNION FUNCTIONS
+// ADD == OPERATOR
+// ADD MATRIX ROTATE FUNCTION
+// ADD MATRIX DETERMINANT
 
-int main()
-{
-    //Matrix<int,3,2> myMatrix;
-    //myMatrix={1,2,3,4,5,6};
-
-//    Matrix<int,2,3> myMatrix;
-//    myMatrix={1,2,3,4,5,6};
-
-
-//    Matrix<int,3,2> newMatrix;
-//    newMatrix={5,6,7,8,9,10};
-
-//    std::cout<<myMatrix.getRows();
-
-//    myMatrix=myMatrix*newMatrix;
-//    myMatrix.print();
-
-
-    Quaternion<int> q(2,3,4,5);
-    Quaternion<int> q2;
-    q2=q;
-
-    q2.print();
+// TESTTTTTTT , USE NGL TEST FOLDER EXAMPLES
 
 
 
-    Matrix<int,1,3> vector= {2,3,4};
-    Matrix<int,1,3> vector2= {5,7,5};
+    int main() {
 
-    std::cout<<vector.angle(vector2)<<"\n";
+//        Quaternion<int> q(2,3,4,5);
+//        Quaternion<int> q2;
+//        q2=q;
 
-    vector=vector.cross(vector2);
+//        q2.print();
 
-    vector.print();
+        Matrix<float,3,3> mat3= {3,0,2,2,0,-2,0,1,1};
 
+        //mat3.inverse();
 
+        Matrix<float,4,4> mat4= {1,0,1,0,0,2,2,2,3,3,0,3,4,4,4,0};
 
+        mat4.inverse();
 
+        mat4.print();
 
-//    vector=vector.cross(vector2);
+        //mat.minorMatrix();
 
-//    vector.print();
-
-//    Matrix<int,1,25> tom;
-
-//    //std::cout<<tom.m_vector;
-
-
-//        for(int j =0; j<13; ++j)
-//        {
-//            tom(1,j) = j;
-//        }
-
-
-    //tom.cross(tom);
-    //tom.print();
+        //mat3.print();
 
 
 
+//        Matrix<int,1,3> vector= {2,3,4};
+//        Matrix<int,1,3> vector2= {5,7,5};
+
+//        std::cout<<vector.angle(vector2)<<"\n";
+
+//        vector=vector.cross(vector2);
+
+//        vector.print();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
+    }

@@ -1,7 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 #include <stdexcept>
-#include <algorithm>
+//#include <algorithm>
 #include <iostream>
 #include "quaternion.h"
 
@@ -92,6 +92,9 @@ public:
     template <size_t N>
     Matrix<T, ROWS, COLS>
     operator* ( Matrix<T,COLS,N>& rhs);
+    Matrix& inverse();
+    Matrix& minorMatrix();
+
 
     /// Vector only methods
     float magnitude();
@@ -605,7 +608,7 @@ template <typename T, size_t ROWS, size_t COLS>
 Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 {
     if( COLS !=3)
-        throw std::out_of_range("You must use a 3D vector for this function");
+        throw std::out_of_range("You must use a 3D vector for the cross product function");
 
     vectorCheck();
     rhs.vectorCheck();
@@ -656,6 +659,357 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 
 }
 
+//----------------------------------------------------------------------------------------------
+
+template <typename T, size_t ROWS, size_t COLS>
+Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix()
+{
+    T tmp[ROWS][COLS];
+
+    for(int i=0; i<ROWS; i++)
+    {
+        for(int j=0; j<COLS; j++)
+        {
+          tmp[i][j]=0;
+
+        }
+    }
+
+    // row of minor matrix
+    for(int i = 0; i<ROWS; i++)
+    {
+        // col of minor matrix
+        for( int j = 0; j<COLS; j++)
+        {
+            // row for calculation
+            for(int k = 0; k<ROWS; k++)
+            {
+                if(k==i)
+                {
+                    k++;
+
+                }
+
+                // col for calculation
+                for( int l = 0; l<COLS; l++)
+                {
+                    if(l==j)
+                    {
+                        l++;
+                    }
+
+                    tmp[i][j]+=m_data[k][l];
+                    std::cout<<tmp[i][j]<<"\n";
+
+
+
+
+                }
+            }
+        }
+    }
+
+    for(int i=0; i<ROWS; i++)
+    {
+        for(int j=0; j<COLS; j++)
+        {
+          m_data[i][j]=tmp[i][j];
+
+        }
+
+    }
+
+    return *this;
+
+
+
+
+}
+
+//----------------------------------------------------------------------------------------------
+
+template <typename T, size_t ROWS, size_t COLS>
+Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
+{
+    // test to see if matrix times inverse equils identity
+    if( ROWS != COLS)
+        throw std::out_of_range("You must use a square matrix for the inverse function");
+
+    std::cout<<"inverse called \n";
+
+    T tmp[ROWS][COLS];
+    T determinant = 0;
+
+    for(int i=0; i<ROWS; i++)
+    {
+        for(int j=0; j<COLS; j++)
+        {
+          tmp[i][j]=0;
+
+        }
+    }
+
+    // find inverse of 2x2 matrix
+    if(ROWS==2)
+    {
+
+
+        tmp[0][0]= m_data[1][1];
+        tmp[0][1]=-m_data[0][1];
+        tmp[1][0]=-m_data[1][0];
+        tmp[1][1]= m_data[0][0];
+
+        determinant = (m_data[0][0]*m_data[1][1])-(m_data[0][1]*m_data[1][0]);
+
+        for(int i = 0; i<ROWS; i++)
+        {
+            for( int j = 0; j<COLS; j++)
+            {
+
+                m_data[i][j]=tmp[i][j]/determinant;
+                //std::cout<<m_data[i][j]<<"\n";
+
+            }
+        }
+    }
+/// referenced from http://forgetcode.com/C/1781-Inverse-Matrix-of-3x3
+    if(ROWS==3)
+    {
+
+
+    for(int i=0;i<3;i++)
+        determinant = determinant + (m_data[0][i]*(m_data[1][(i+1)%3]*m_data[2][(i+2)%3] - m_data[1][(i+2)%3]*m_data[2][(i+1)%3]));
+
+     std::cout<<"\nInverse of matrix is: \n\n";
+     for(int i=0;i<3;i++){
+
+        for(int j=0;j<3;j++)
+        {
+
+             tmp[i][j] = ((m_data[(i+1)%3][(j+1)%3] * m_data[(i+2)%3][(j+2)%3]) - (m_data[(i+1)%3][(j+2)%3]*m_data[(i+2)%3][(j+1)%3]))/ determinant;
+
+             //std::cout<<tmp[i][j]<<"\n";
+
+
+        }
+     }
+    }
+
+     // 4x4 matrix
+     if(ROWS==4)
+     {
+         std::cout<<"inverse of matrix with 4 rows is  \n";
+
+        T inv[4][4], det;
+
+        T invOut[4][4];
+
+
+// initilize arrays values to zero
+        for(int i = 0; i<ROWS; i++)
+        {
+            for( int j = 0; j<COLS; j++)
+            {
+                inv[i][j]=0;
+
+                invOut[i][j]=0;
+
+            }
+        }
+
+
+        // set m's values to m_datas values
+
+//        for( int k = 0; k<16; k++)
+//        {
+//        for(int i = 0; i<ROWS; i++)
+//        {
+//            for( int j = 0; j<COLS; j++)
+//            {
+
+
+//                    m[k]=m_data[i][j];
+
+//                    std::cout<<m[k]<<" m";
+
+
+
+//            }
+
+//            std::cout<<"\n";
+//        }
+//        }
+
+
+        std::cout<< "inv 0 is "<<inv[0]<<"\n";
+
+
+             int i;
+
+             inv[0][0] = m_data[1][1]  * m_data[2][2] * m_data[3][3] - //0
+                      m_data[1][1]  * m_data[2][3] * m_data[3][2] -
+                      m_data[2][1]  * m_data[1][2]  * m_data[3][3] +
+                      m_data[2][1]  * m_data[1][3]  * m_data[3][2] +
+                      m_data[3][1] * m_data[1][2]  * m_data[2][3] -
+                      m_data[3][1] * m_data[1][3]  * m_data[2][2];
+
+             std::cout<< "inv[0] is "<< inv[0]<<"\n";
+
+             inv[1][0] = -m_data[1][0]  * m_data[2][2] * m_data[3][3] + //4
+                       m_data[1][0]  * m_data[2][3] * m_data[3][2] +
+                       m_data[2][0]  * m_data[1][2]  * m_data[3][3] -
+                       m_data[2][0]  * m_data[1][3]  * m_data[3][2] -
+                       m_data[3][0] * m_data[1][2]  * m_data[2][3] +
+                       m_data[3][0] * m_data[1][3]  * m_data[2][2];
+
+
+             inv[2][0] = m_data[1][0]  * m_data[2][1] * m_data[3][3] - //8
+                      m_data[1][0]  * m_data[2][3] * m_data[3][1] -
+                      m_data[2][0]  * m_data[1][1] * m_data[3][3] +
+                      m_data[2][0]  * m_data[1][3] * m_data[3][1] +
+                      m_data[3][0] * m_data[1][1] * m_data[2][3] -
+                      m_data[3][0] * m_data[1][3] * m_data[2][1];
+
+             inv[3][0] = -m_data[1][0]  * m_data[2][1] * m_data[3][2] + //12
+                        m_data[1][0]  * m_data[2][2] * m_data[3][1] +
+                        m_data[2][0]  * m_data[1][1] * m_data[3][2] -
+                        m_data[2][0]  * m_data[1][2] * m_data[3][1] -
+                        m_data[3][0] * m_data[1][1] * m_data[2][2] +
+                        m_data[3][0] * m_data[1][2] * m_data[2][1];
+
+             inv[0][0] = -m_data[0][1]  * m_data[2][2] * m_data[3][3] + //1
+                       m_data[0][1]  * m_data[2][3] * m_data[3][2] +
+                       m_data[2][1]  * m_data[0][2] * m_data[3][3] -
+                       m_data[2][1]  * m_data[0][3] * m_data[3][2] -
+                       m_data[3][1] * m_data[0][2] * m_data[2][3] +
+                       m_data[3][1] * m_data[0][3] * m_data[2][2];
+
+             inv[1][1] = m_data[0][0]  * m_data[2][2] * m_data[3][3] - //5
+                      m_data[0][0]  * m_data[2][3] * m_data[3][2] -
+                      m_data[2][0]  * m_data[0][2] * m_data[3][3] +
+                      m_data[2][0]  * m_data[0][3] * m_data[3][2] +
+                      m_data[3][0] * m_data[0][2] * m_data[2][3] -
+                      m_data[3][0] * m_data[0][3] * m_data[2][2];
+
+             inv[2][1] = -m_data[0][0]  * m_data[2][1] * m_data[3][3] + //9
+                       m_data[0][0]  * m_data[2][3] * m_data[3][1] +
+                       m_data[2][0]  * m_data[0][1] * m_data[3][3] -
+                       m_data[2][0]  * m_data[0][3] * m_data[3][1] -
+                       m_data[3][0] * m_data[0][1] * m_data[2][3] +
+                       m_data[3][0] * m_data[0][3] * m_data[2][1];
+
+             inv[3][1] = m_data[0][0]  * m_data[2][1] * m_data[3][2] - //13
+                       m_data[0][0]  * m_data[2][2] * m_data[3][1] -
+                       m_data[2][0]  * m_data[0][1] * m_data[3][2] +
+                       m_data[2][0]  * m_data[0][2] * m_data[3][1] +
+                       m_data[3][0] * m_data[0][1] * m_data[2][2] -
+                       m_data[3][0] * m_data[0][2] * m_data[2][1];
+
+             inv[0][2] = m_data[0][1]  * m_data[1][2] * m_data[3][3] - //2
+                      m_data[0][1]  * m_data[1][3] * m_data[3][2] -
+                      m_data[1][1]  * m_data[0][2] * m_data[3][3] +
+                      m_data[1][1]  * m_data[0][3] * m_data[3][2] +
+                      m_data[3][1] * m_data[0][2] * m_data[1][3] -
+                      m_data[3][1] * m_data[0][3] * m_data[1][2];
+
+             inv[1][2] = -m_data[0][0]  * m_data[1][2] * m_data[3][3] + //6
+                       m_data[0][0]  * m_data[1][3] * m_data[3][2] +
+                       m_data[1][0]  * m_data[0][2] * m_data[3][3] -
+                       m_data[1][0]  * m_data[0][3] * m_data[3][2] -
+                       m_data[3][0] * m_data[0][2] * m_data[1][3] +
+                       m_data[3][0] * m_data[0][3] * m_data[1][2];
+
+             inv[2][2] = m_data[0][0]  * m_data[1][1] * m_data[3][3] - //10
+                       m_data[0][0]  * m_data[1][3] * m_data[3][1] -
+                       m_data[1][0]  * m_data[0][1] * m_data[3][3] +
+                       m_data[1][0]  * m_data[0][3] * m_data[3][1] +
+                       m_data[3][0] * m_data[0][1] * m_data[1][3] -
+                       m_data[3][0] * m_data[0][3] * m_data[1][1];
+
+             inv[3][2] = -m_data[0][0]  * m_data[1][1] * m_data[3][2] + //14
+                        m_data[0][0]  * m_data[1][2] * m_data[3][1] +
+                        m_data[1][0]  * m_data[0][1] * m_data[3][2] -
+                        m_data[1][0]  * m_data[0][2] * m_data[3][1] -
+                        m_data[3][0] * m_data[0][1] * m_data[1][2] +
+                        m_data[3][0] * m_data[0][2] * m_data[1][1];
+
+             inv[0][3] = -m_data[0][1] * m_data[1][2] * m_data[2][3] + //3
+                       m_data[0][1] * m_data[1][3] * m_data[2][2] +
+                       m_data[1][1] * m_data[0][2] * m_data[2][3] -
+                       m_data[1][1] * m_data[0][3] * m_data[2][2] -
+                       m_data[2][1] * m_data[0][2] * m_data[1][3] +
+                       m_data[2][1] * m_data[0][3] * m_data[1][2];
+
+             inv[0][7] = m_data[0][0] * m_data[1][2] * m_data[2][3] - //7
+                      m_data[0][0] * m_data[1][3] * m_data[2][2] -
+                      m_data[1][0] * m_data[0][2] * m_data[2][3] +
+                      m_data[1][0] * m_data[0][3] * m_data[2][2] +
+                      m_data[2][0] * m_data[0][2] * m_data[1][3] -
+                      m_data[2][0] * m_data[0][3] * m_data[1][2];
+
+             inv[2][3] = -m_data[0][0] * m_data[1][1] * m_data[2][3] + //11
+                        m_data[0][0] * m_data[1][3] * m_data[2][1] +
+                        m_data[1][0] * m_data[0][1] * m_data[2][3] -
+                        m_data[1][0] * m_data[0][3] * m_data[2][1] -
+                        m_data[2][0] * m_data[0][1] * m_data[1][3] +
+                        m_data[2][0] * m_data[0][3] * m_data[1][1];
+
+             inv[3][3] = m_data[0][0] * m_data[1][1] * m_data[2][2] - //15
+                       m_data[0][0] * m_data[1][2] * m_data[2][1] -
+                       m_data[1][0] * m_data[0][1] * m_data[2][2] +
+                       m_data[1][0] * m_data[0][2] * m_data[2][1] +
+                       m_data[2][0] * m_data[0][1] * m_data[1][2] -
+                       m_data[2][0] * m_data[0][2] * m_data[1][1];
+
+             det = m_data[0][0] * inv[0][0] + m_data[0][1] * inv[1][0] + m_data[0][2] * inv[2][0] + m_data[0][3] * inv[3][0];
+
+
+             std::cout<<"det"<<det<<"\n";
+            // if (det == 0)
+                 // assert error
+
+             det = 1.0 / det;
+
+              std::cout<<"det"<<det<<"\n";
+
+              for(int i = 0; i<ROWS; i++)
+              {
+                  for( int j = 0; j<COLS; j++)
+                  {
+                     invOut[i][j] = inv[i][j] * det;
+                     std::cout<<"final inverse matrix"<<invOut[i]<<"\n";
+                  }
+             }
+
+             for(int i = 0; i<ROWS; i++)
+             {
+                 for( int j = 0; j<COLS; j++)
+                 {
+
+                     m_data[i][j]=invOut[i][j];
+                     //std::cout<<m_data[i][j]<<"\n";
+
+                 }
+             }
+
+     }
+
+     for(int i = 0; i<ROWS; i++)
+     {
+         for( int j = 0; j<COLS; j++)
+         {
+
+             m_data[i][j]=tmp[j][i];
+             //std::cout<<m_data[i][j]<<"\n";
+
+         }
+     }
+
+
+
+
+    return *this;
+}
 //----------------------------------------------------------------------------------------------
 
 template <typename T, size_t ROWS, size_t COLS>
