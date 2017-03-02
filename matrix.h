@@ -765,7 +765,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
     }
 
     // find inverse of 2x2 matrix
-    if(ROWS==2)
+    if(ROWS==2) //works!
     {
 
 
@@ -776,24 +776,36 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 
         determinant = (m_data[0][0]*m_data[1][1])-(m_data[0][1]*m_data[1][0]);
 
+        if( determinant==0)
+            throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
+
+        //std::cout<<determinant<<"\n";
+
         for(int i = 0; i<ROWS; i++)
         {
             for( int j = 0; j<COLS; j++)
             {
 
-                m_data[i][j]=tmp[i][j]/determinant;
-                //std::cout<<m_data[i][j]<<"\n";
+                tmp[i][j]=tmp[i][j]/determinant;
+                //std::cout<<tmp[i][j]<<"\n";
 
             }
         }
     }
 /// referenced from http://forgetcode.com/C/1781-Inverse-Matrix-of-3x3
-    if(ROWS==3)
+    if(ROWS==3) // works!
     {
 
 
     for(int i=0;i<3;i++)
+
+    {
         determinant = determinant + (m_data[0][i]*(m_data[1][(i+1)%3]*m_data[2][(i+2)%3] - m_data[1][(i+2)%3]*m_data[2][(i+1)%3]));
+    }
+
+    if( determinant==0)
+        throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
+
 
      std::cout<<"\nInverse of matrix is: \n\n";
      for(int i=0;i<3;i++){
