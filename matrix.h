@@ -29,7 +29,7 @@ private:
 
 public:
 
-    // contructor will set data to zero
+    // default contructor will set data to zero
     Matrix();
 
    // copy constructor
@@ -61,39 +61,40 @@ public:
 
     /// Matrix and Vector Operation
 
-    // assignment operator ( different sizes)
-
-    template <size_t N>
+    // assignment operator ( different sized arrays/vectors )
+    template <size_t N,size_t M>
     Matrix<T, ROWS, COLS>
-    operator= ( Matrix<T,ROWS,N>& rhs);
+    operator= ( Matrix<T,N,M>& rhs);
 
 
     // assignment operator
     Matrix& operator= (const Matrix<T,ROWS,COLS>& rhs);
     // addition operator
     Matrix& operator+ (const Matrix<T,ROWS,COLS>& rhs);
-    // addition operator scalar
-    Matrix& operator+ (T scalar);
     // subtraction operator
-    Matrix& operator- (const Matrix<T,ROWS,COLS>& rhs);
-    // subtraction operator scalar
-    Matrix& operator- (T scalar);
+    Matrix& operator- (const Matrix<T,ROWS,COLS>& rhs);   
     // negative operator
     Matrix& operator- ();
 
+
+    // addition operator scalar
+    Matrix& operator+ (T scalar);
+    // subtraction operator scalar
+    Matrix& operator- (T scalar);
     // multiply operator scalar
     Matrix& operator* (T scalar);
     // division operator scalar
     Matrix& operator/ (T scalar);
 
     /// Matrix only opertaion
-    // multiply operator
 
+    // multiply operator
     template <size_t N>
     Matrix<T, ROWS, COLS>
     operator* ( Matrix<T,COLS,N>& rhs);
     Matrix& inverse();
-    Matrix& minorMatrix();
+    Matrix& minorMatrix(int _row, int _col);
+    Matrix& transpose();
 
 
     /// Vector only methods
@@ -108,11 +109,10 @@ public:
     Matrix& cross(Matrix<T,ROWS,COLS>& rhs);
 
 
+    //resize matrix or vector
+    void resize(int _rows, int _cols);
 
-
-
-
-    // prints out matrix
+    // prints out matrix or vector
     void print();
 
 };
@@ -137,6 +137,8 @@ Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
         m_vector=true;
         //std::cout<<"is a vector \n";
     }
+
+
 
 }
 
@@ -172,9 +174,11 @@ Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 
 /// Assignment operator, variable sized matrices (for matrix multiplication assignment)
 template <typename T, size_t ROWS, size_t COLS>
-template<size_t N>
-Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,ROWS, N>& rhs)
+template<size_t N,size_t M>
+Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,N,M>& rhs)
 {
+
+    // resize new matrix
 
 
 
@@ -335,16 +339,16 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
     if(m_vector == false)
     {
 
-
-
     if( COLS!=rhs.getRows())
-        throw std::out_of_range("number of columns of matrix 1 mustbe equil to number of rows of matrix 2");
+    {
+     throw std::out_of_range("number of columns of matrix 1 mustbe equil to number of rows of matrix 2");
+    }
 
     int i, j, k;
 
 
     // initialize tmp matrix values to 0
-    T tmp[rhs.getRows()][m_cols];
+    T tmp[m_rows][rhs.getCols()];
 
     for(int i=0; i<ROWS; i++)
     {
@@ -355,6 +359,8 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
         }
     }
 
+
+        // For loop structure referenced from http://stackoverflow.com/questions/10162467/matrix-multiplication-in-c
         // Multiplying matrices and storing values in matrix tmp
         for(i = 0; i < m_rows; ++i)
         {
@@ -370,26 +376,24 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
             }
         }
 
+        // resizes matrix to 1st matrix rows x second matrix cols
+        resize(m_rows,rhs.getCols());
+
+        std::cout<<m_rows<<" rows \n";
+        std::cout<<m_cols<<" cols \n";
+
 
 
         // assignning the tmp matrix's values to m_data
-        for(int i=0; i<ROWS; i++)
+        for(int i=0; i<m_rows; i++)
         {
-            for(int j=0; j<COLS; j++)
+            for(int j=0; j<m_cols; j++)
             {
               m_data[i][j]=tmp[i][j];
 
             }
 
         }
-
-
-
-
-
-
-
-
 
     }
 
@@ -403,6 +407,7 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
 
 
     }
+
 
     return *this;
 
@@ -662,13 +667,22 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 //----------------------------------------------------------------------------------------------
 
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix()
+Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix(int _row, int _col)
 {
-    T tmp[ROWS][COLS];
+    //FIX!!!!!!!!!!!
 
-    for(int i=0; i<ROWS; i++)
+    // temporary matrix to store the minor matrices details
+    T tmp[ROWS-1][COLS-1];
+    int i=0;
+    int j=0;
+
+    int k;
+    int l;
+
+
+    for(int i=0; i<ROWS-1; i++)
     {
-        for(int j=0; j<COLS; j++)
+        for(int j=0; j<COLS-1; j++)
         {
           tmp[i][j]=0;
 
@@ -676,53 +690,54 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix()
     }
 
     // row of minor matrix
-    for(int i = 0; i<ROWS; i++)
+    for(i = 0; i<ROWS; i++)
     {
-        // col of minor matrix
-        for( int j = 0; j<COLS; j++)
+        if(i==_row-1)
         {
-            // row for calculation
-            for(int k = 0; k<ROWS; k++)
-            {
-                if(k==i)
-                {
-                    k++;
+            i++;
 
-                }
+        }
 
-                // col for calculation
-                for( int l = 0; l<COLS; l++)
-                {
-                    if(l==j)
+
+        // col of minor matrix
+        for(j = 0; j<COLS; j++)
+        {
+
+                    if(j==_col-1)
                     {
-                        l++;
+                        j++;
+
+                    }
+                    else
+                    {
+
+                    tmp[i][j]=m_data[i][j];
+                    std::cout<<m_data[i][j]<<" m_data \n";
+                    std::cout<<tmp[i][j]<<" tmp \n";
+
+
                     }
 
-                    tmp[i][j]+=m_data[k][l];
-                    std::cout<<tmp[i][j]<<"\n";
-
-
-
-
-                }
-            }
         }
+
+
+
+
     }
 
-    for(int i=0; i<ROWS; i++)
+    for(int i=0; i<ROWS-1; i++)
     {
-        for(int j=0; j<COLS; j++)
+        for(int j=0; j<COLS-1; j++)
         {
+
           m_data[i][j]=tmp[i][j];
+          std::cout<<m_data[i][j]<<"final matrix \n";
 
         }
 
     }
 
     return *this;
-
-
-
 
 }
 
@@ -795,56 +810,21 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
      }
     }
 
+    // referenced from http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
      // 4x4 matrix
      if(ROWS==4)
      {
-         std::cout<<"inverse of matrix with 4 rows is  \n";
+        T inv[4][4];
 
-        T inv[4][4], det;
-
-        T invOut[4][4];
-
-
-// initilize arrays values to zero
+        // initilize inv matrix values to zero
         for(int i = 0; i<ROWS; i++)
         {
             for( int j = 0; j<COLS; j++)
             {
                 inv[i][j]=0;
 
-                invOut[i][j]=0;
-
             }
         }
-
-
-        // set m's values to m_datas values
-
-//        for( int k = 0; k<16; k++)
-//        {
-//        for(int i = 0; i<ROWS; i++)
-//        {
-//            for( int j = 0; j<COLS; j++)
-//            {
-
-
-//                    m[k]=m_data[i][j];
-
-//                    std::cout<<m[k]<<" m";
-
-
-
-//            }
-
-//            std::cout<<"\n";
-//        }
-//        }
-
-
-        std::cout<< "inv 0 is "<<inv[0]<<"\n";
-
-
-             int i;
 
              inv[0][0] = m_data[1][1]  * m_data[2][2] * m_data[3][3] - //0
                       m_data[1][1]  * m_data[2][3] * m_data[3][2] -
@@ -853,7 +833,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
                       m_data[3][1] * m_data[1][2]  * m_data[2][3] -
                       m_data[3][1] * m_data[1][3]  * m_data[2][2];
 
-             std::cout<< "inv[0] is "<< inv[0]<<"\n";
+
 
              inv[1][0] = -m_data[1][0]  * m_data[2][2] * m_data[3][3] + //4
                        m_data[1][0]  * m_data[2][3] * m_data[3][2] +
@@ -877,7 +857,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
                         m_data[3][0] * m_data[1][1] * m_data[2][2] +
                         m_data[3][0] * m_data[1][2] * m_data[2][1];
 
-             inv[0][0] = -m_data[0][1]  * m_data[2][2] * m_data[3][3] + //1
+             inv[0][1] = -m_data[0][1]  * m_data[2][2] * m_data[3][3] + //1
                        m_data[0][1]  * m_data[2][3] * m_data[3][2] +
                        m_data[2][1]  * m_data[0][2] * m_data[3][3] -
                        m_data[2][1]  * m_data[0][3] * m_data[3][2] -
@@ -961,36 +941,24 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
                        m_data[2][0] * m_data[0][1] * m_data[1][2] -
                        m_data[2][0] * m_data[0][2] * m_data[1][1];
 
-             det = m_data[0][0] * inv[0][0] + m_data[0][1] * inv[1][0] + m_data[0][2] * inv[2][0] + m_data[0][3] * inv[3][0];
+             determinant = m_data[0][0] * inv[0][0] + m_data[0][1] * inv[1][0] + m_data[0][2] * inv[2][0] + m_data[0][3] * inv[3][0];
+
+             if( determinant==0)
+                 throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
+
+             determinant = 1.0 / determinant;
 
 
-             std::cout<<"det"<<det<<"\n";
-            // if (det == 0)
-                 // assert error
-
-             det = 1.0 / det;
-
-              std::cout<<"det"<<det<<"\n";
 
               for(int i = 0; i<ROWS; i++)
               {
                   for( int j = 0; j<COLS; j++)
                   {
-                     invOut[i][j] = inv[i][j] * det;
-                     std::cout<<"final inverse matrix"<<invOut[i]<<"\n";
+
+                     tmp[i][j] = inv[i][j] * determinant;
+                     //std::cout<<"final inverse matrix"<<tmp[i][j]<<"\n";
                   }
-             }
-
-             for(int i = 0; i<ROWS; i++)
-             {
-                 for( int j = 0; j<COLS; j++)
-                 {
-
-                     m_data[i][j]=invOut[i][j];
-                     //std::cout<<m_data[i][j]<<"\n";
-
-                 }
-             }
+             }                     
 
      }
 
@@ -999,7 +967,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
          for( int j = 0; j<COLS; j++)
          {
 
-             m_data[i][j]=tmp[j][i];
+             m_data[i][j]=tmp[i][j];
              //std::cout<<m_data[i][j]<<"\n";
 
          }
@@ -1010,14 +978,66 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 
     return *this;
 }
+
+//----------------------------------------------------------------------------------------------
+
+template <typename T, size_t ROWS, size_t COLS>
+Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::transpose()
+{
+    std::cout<<"transpose \n";
+
+    T tmp[COLS][ROWS];
+
+    for(int i = 0; i< ROWS; i++)
+    {
+        for(int j = 0; j < COLS; j++)
+        {
+            tmp[j][i]=m_data[i][j];
+            //std::cout<<tmp[j][i]<<" tmp \n";
+
+        }
+    }
+
+
+    resize(COLS,ROWS);
+
+    for(int i = 0; i<COLS; i++)
+    {
+        for( int j = 0; j<ROWS; j++)
+        {
+
+            m_data[i][j]=tmp[i][j];
+            //std::cout<<m_data[i][j]<<" m_data resized \n";
+
+        }
+    }
+
+
+
+
+    return *this;
+}
+
+//----------------------------------------------------------------------------------------------
+
+template <typename T, size_t ROWS, size_t COLS>
+void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
+{
+
+    m_data[m_rows][m_cols]=m_data[_rows][_cols];
+
+    m_rows=_rows;
+    m_cols=_cols;
+}
+
 //----------------------------------------------------------------------------------------------
 
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix< T,ROWS,COLS>::print()
 {
-    for(int i = 0; i<ROWS; i++)
+    for(int i = 0; i<m_rows; i++)
       {
-          for(int j = 0; j<COLS; j++)
+          for(int j = 0; j<m_cols; j++)
           {
               std::cout<<m_data[i][j]<<" ";
 
