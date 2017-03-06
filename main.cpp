@@ -7,17 +7,11 @@
 // DO THIS STUFF FOR GOD SAKE
 
 // THIS WEEK
-// EDIT NUMBER OF COLS AFTER MULTIPLICATION EG 2X3 AND 3X2 SHOULD RESULT IN 2X2 MATRIX (CALL CONSTRUCTOR POSSIBLY)  done!!!
-// ADD MULTIPLE MATRIX SIZES FOR CROSS PRODUCT
-// ADD MATRIX INVERSE                               done! (2x2,3x3,4x4)
 // ADD QUATERNION FUNCTIONS -this weekend
-// ADD == OPERATOR -this weekend
-// ADD MATRIX ROTATE FUNCTION -this weekend
-// ADD MATRIX DETERMINANT -this weekend
-// MATRIX TRANSPOSE -this weekend  done!!!
-// TEST IF ORTHOGONAL (INVERSE EQUILS TRANSPOSED MATRIX)
-// MINOR
+// ADD MATRIX ROTATE FUNCTION -this weekend (might be done)
 // COFACTOR
+// PROJECTION MATRIX - might not do
+// A  LENGTH,NORM,CONJUGATE AND INVERSE OF QUATERNION
 
 
 // NEXT WEEK
@@ -41,14 +35,45 @@
     int main()
     {
 
-        Matrix<int,2,3> mat{1,3,5,2,4,6};
+        Matrix<int,4,4> mat{1,2,3,4,2,2,2,4,4,5,6,4,7,8,9,4};
+        Matrix<int,3,3> vec{6,1,1,4,-2,5,2,8,7};
+        Matrix<int,3,3> vec2;
 
-        Matrix<int,3,2> mat2{1,2,3,4,5,6};
+        Matrix<int,2,3> mat3{1,2,3,4,5,6};
+        Matrix<int,1,2> mat4;
 
-        Matrix<float,4,4> inv{1,1,3,4,5,6,7,8,9,10,11,12,13,14,15,1};
+       Matrix<int,3,2> mat2{7,8,9,10,11,12};
 
-        inv.inverse();
+//        Matrix<float,4,4> inv{1,1,3,4,5,6,7,8,9,10,11,12,13,14,15,1};
 
-        inv.print();
+
+       //vec=mat.minorMatrix(2,4);
+       //mat4=mat3.minorMatrix(2,3);
+
+        //std::cout<<vec.determinant();
+        //mat3.print();
+
+
+
+       //mat.vectorCheck();
+
+//        //inv.inverse();
+
+////        //inv.print();
+
+        Quaternion<float> q{0,0,3,4};
+        Quaternion<float> q2{5,6,7,8};
+
+
+        std::cout<<q.length();
+//         //mat.print();
+
+//         q2 = q2*q;
+
+         //q.print();
+         //q2.print();
+
+
+
 
     }
