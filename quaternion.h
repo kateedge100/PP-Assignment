@@ -49,7 +49,9 @@ public:
 //    Quaternion& operator/ (const Quaternion<T>& rhs);
 
     T length();
-
+    Quaternion<T>& conjugate();
+    Quaternion<T>& normalize();
+    Quaternion<T>& inverse();
     void print();
 
 };
@@ -220,13 +222,46 @@ Quaternion<T>& Quaternion<T>::operator /(T _scalar)
 template <typename T>
 void Quaternion<T>::print()
 {
-    std::cout<<m_a<<" + "<<m_b<<"i + "<<m_c<<"j + "<<m_d<<"\n";
+    std::cout<<m_a<<" + "<<m_b<<"i + "<<m_c<<"j + "<<m_d<<"k\n";
 }
 
 template <typename T>
 T Quaternion<T>::length()
 {
-    T length = ((m_a*m_a)+(m_b*m_b)+(m_c*m_c)+(m_d*m_d))/4;
+    T length = sqrt((m_a*m_a)+(m_b*m_b)+(m_c*m_c)+(m_d*m_d));
+
     return length;
+}
+
+template <typename T>
+Quaternion<T>& Quaternion<T>::normalize()
+{
+
+    m_a=m_a/length();
+    m_b=m_b/length();
+    m_c=m_c/length();
+    m_d=m_d/length();
+
+    return *this;
+
+}
+
+template <typename T>
+Quaternion<T>& Quaternion<T>::conjugate()
+{
+    m_b=-m_b;
+    m_c=-m_c;
+    m_d=-m_d;
+
+    return *this;
+}
+
+
+template <typename T>
+Quaternion<T>& Quaternion<T>::inverse()
+{
+
+
+    return conjugate()/(length()*length());
 }
 #endif // QUARTERNION_H

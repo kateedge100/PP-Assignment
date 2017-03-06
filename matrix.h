@@ -117,7 +117,8 @@ public:
     float angle(Matrix<T,ROWS,COLS>& rhs);
     // cross product
     Matrix& cross(Matrix<T,ROWS,COLS>& rhs);
-    Matrix& rotateVector(double _angle, char _axis);
+    // rotates vector by angle _angle
+    Matrix& rotateVector(double _angle);
 
     //resize matrix or vector
     void resize(int _rows, int _cols);
@@ -1120,14 +1121,31 @@ bool Matrix< T,ROWS,COLS>::orthogonal()
 //----------------------------------------------------------------------------------------------
 
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle, char _axis)
+Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
 {
+    //std::cout<<"vector rotate \n";
     vectorCheck();
 
+//std::cout<<"vector rotate \n";
+
+    T rotMat [m_rows][m_rows];
+
+    for(int i = 0; i < m_rows; i++)
+    {
+        for(int j; j< m_cols; j++)
+        {
+            rotMat[i][j]=0;
+        }
+    }
+
+    T tmp [m_rows][1];
+
+    for(int i = 0 ;i<m_rows;i++)
+    {
+        tmp[i][0]=0;
+    }
 
 
-    T rotMat [m_rows][m_rows] = {0,0,0,0};
-    T tmp [m_rows][1] = {0,0};
 
     //convert to radians
     double angle= _angle * (M_PI /180);
@@ -1141,12 +1159,13 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle, char _axis
     if(m_rows==2)
     {
 
-
         // counter clockwise around the origin
         rotMat[0][0]=cos(angle);
         rotMat[0][1]= -sin(angle);
         rotMat[1][0]= sin(angle);
         rotMat[1][1]= cos(angle);
+
+
 
         //std::cout<<rotMat[0][1]<<" \n";
         for(int i = 0; i < 2; i ++)
@@ -1154,7 +1173,7 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle, char _axis
             for(int j = 0; j < 2; j++)
             {
                 tmp[i][1]+=rotMat[i][j]*m_data[j][1];
-                std::cout<<rotMat[i][j]<<" \n";
+                std::cout<<tmp[i][1]<<" \n";
             }
         }
     }
@@ -1162,15 +1181,15 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle, char _axis
         // if 3d vector use 3d rotation matrix
         if(m_rows==3)
         {
-            switch(_axis)
-            {
-                case "x" :
-                rotMat={1,0,0,0,cos(_angle),-sin(_angle),0,sin(-angle),cos(_angle)};
-                case "y" :
-                rotMat={cos(_angle),0,sin(_angle),0,1,0,-sin(_angle),0,cos(-angle)};
-                case "z" :
-                rotMat={cos(_angle),-sin(_angle),0,sin(_angle),cos(_angle),0,0,0,1};
-            }
+//            switch(_axis)
+//            {
+//                case "x" :
+//                rotMat={1,0,0,0,cos(_angle),-sin(_angle),0,sin(-angle),cos(_angle)};
+//                case "y" :
+//                rotMat={cos(_angle),0,sin(_angle),0,1,0,-sin(_angle),0,cos(-angle)};
+//                case "z" :
+//                rotMat={cos(_angle),-sin(_angle),0,sin(_angle),cos(_angle),0,0,0,1};
+//            }
 
         }
 
