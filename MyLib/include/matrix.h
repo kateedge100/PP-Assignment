@@ -2,7 +2,6 @@
 #define MATRIX_H
 #include <stdexcept>
 #include <math.h>
-//#include <algorithm>
 #include <iostream>
 #include "quaternion.h"
 
@@ -24,7 +23,7 @@ private:
     T m_data[ROWS][COLS];
 
     // stores if vector after testing if matrix has more then one Col hence is a vector
-   // bool m_vector = false;
+    bool m_vector = false;
 
     // function to check for a valid row and column range.
     void rangeCheck(std::size_t rowID, std::size_t colID);
@@ -61,12 +60,12 @@ public:
     T& operator()(std::size_t rowID, std::size_t colID);
     const T& operator()(std::size_t rowID, std::size_t colID) const ; // for const objects
 
-    bool vectorCheck();
+    void vectorCheck();
 
 
     /// Matrix and Vector Operation
 
-    // assignment operator ( different sized arrays/vectors )
+    // assignment operator ( different sized matrices for matrix multiplication )
     template <size_t N,size_t M>
     Matrix<T, ROWS, COLS>
     operator= ( Matrix<T,N,M>& rhs);
@@ -143,11 +142,11 @@ Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
        }
     }
 
-//    if(ROWS==1 || COLS==1)
-//    {
-//        m_vector=true;
-//        std::cout<<"is a vector \n";
-//    }
+    if(ROWS==1 || COLS==1)
+    {
+        m_vector=true;
+        std::cout<<"is a vector \n";
+    }
 
 
 
@@ -168,7 +167,7 @@ Matrix< T,ROWS,COLS>::Matrix(const Matrix<T,ROWS,COLS>& rhs)
 
     }
 
-    std::cout<<" copy constructor called \n";
+    //std::cout<<" copy constructor called \n";
 }
 
 //----------------------------------------------------------------------------------------------
@@ -187,7 +186,7 @@ Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 
 //----------------------------------------------------------------------------------------------
 
-/// Assignment operator, variable sized matrices (for matrix multiplication assignment)
+//Assignment operator, variable sized matrices (for matrix multiplication assignment)
 template <typename T, size_t ROWS, size_t COLS>
 template<size_t N,size_t M>
 Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,N,M>& rhs)
@@ -369,12 +368,12 @@ template<size_t N>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
 {
     // matrix-matrix multiplication
-    if(vectorCheck() == false)
+    if(m_vector == false)
     {
 
     if( COLS!=rhs.getRows())
     {
-     throw std::out_of_range("number of columns of matrix 1 mustbe equil to number of rows of matrix 2");
+     throw std::out_of_range("number of columns of matrix 1 must be equil to number of rows of matrix 2");
     }
 
 
@@ -426,7 +425,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& rhs)
     }
 
     // vector vector multiplication
-    else if (vectorCheck() == true)
+    else if (m_vector == true)
     {
         for(int i = 0; i < COLS; i++)
         {
@@ -502,16 +501,14 @@ void Matrix<T,ROWS,COLS>::rangeCheck(std::size_t rowID,std::size_t colID)
 
 /// Checks that function is being applied to a vector not a matrix
 template <typename T, size_t ROWS, size_t COLS>
-bool Matrix<T, ROWS, COLS>::vectorCheck()
+void Matrix<T, ROWS, COLS>::vectorCheck()
 {
     if(m_rows !=1 && m_cols !=1)
     {
         throw std::out_of_range("You must use vectors only for this function");
-        return false;
+
     }
 
-
-    return true;
 
 }
 
@@ -889,7 +886,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 
              tmp[i][j] = ((m_data[(i+1)%3][(j+1)%3] * m_data[(i+2)%3][(j+2)%3]) - (m_data[(i+1)%3][(j+2)%3]*m_data[(i+2)%3][(j+1)%3]))/ determinant();
 
-             //std::cout<<tmp[i][j]<<"\n";
+             std::cout<<tmp[i][j]<<"\n";
 
 
         }

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <string>
-#include "matrix.h"
-#include "quaternion.h"
+#include "include/matrix.h"
+#include "include/quaternion.h"
 
 // DO THIS STUFF FOR GOD SAKE
 
@@ -34,11 +34,14 @@
     int main()
     {
 
-        Matrix<float,2,1> vec{2,9};
+        Matrix<int,2,3> A{1,0,-2,0,3,-1};
+        Matrix<int,3,2> B{0,3,-2,-1,0,4};
+        Matrix<int,2,2> C;
 
-        vec=vec.rotateVector(50);
 
-        vec.print();
+       C= A*B;
+       C.print();
+
 
 
 

@@ -3,10 +3,8 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp
+SOURCES += \
+    matrixGenerator.cpp
 
 HEADERS += \
-    matrix.h \
-    quaternion.h
-
-OTHER_FILES += README.md
+    matrix.h
