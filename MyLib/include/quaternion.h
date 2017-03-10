@@ -25,9 +25,13 @@ public:
     // copy constructor
     Quaternion(const Quaternion<T>& rhs);
 
+    T getData(const char *_data);
+
 
     // assignment operator
     Quaternion& operator= (const Quaternion<T>& rhs);
+    // equility operator
+    bool operator== (const Quaternion<T>& rhs);
     // addition operator
     Quaternion& operator+ (const Quaternion<T>& rhs);
     // addition operator scalar
@@ -48,7 +52,7 @@ public:
     // division operator scalar
 //    Quaternion& operator/ (const Quaternion<T>& rhs);
 
-    T length();
+    T norm();
     Quaternion<T>& conjugate();
     Quaternion<T>& normalize();
     Quaternion<T>& inverse();
@@ -87,6 +91,25 @@ Quaternion<T>::Quaternion(const Quaternion<T> &rhs)
 }
 
 template <typename T>
+T Quaternion<T>::getData(const char* _data)
+{
+    switch(_data)
+    {
+        case "a": m_a=_data;
+               return m_a;
+        case "b": m_b=_data;
+               return m_b;
+        case "c": m_c=_data;
+               return m_c;
+        case "d": m_d=_data;
+               return m_d;
+    }
+
+
+
+}
+
+template <typename T>
 Quaternion<T>& Quaternion<T>::operator =(const Quaternion<T>& rhs)
 {
     m_a=rhs.m_a;
@@ -96,6 +119,23 @@ Quaternion<T>& Quaternion<T>::operator =(const Quaternion<T>& rhs)
 
     return *this;
 
+
+}
+
+template <typename T>
+bool Quaternion<T>::operator ==(const Quaternion<T>& rhs)
+{
+
+
+    if(m_a==rhs.m_a && m_b==rhs.m_b&& m_c==rhs.m_c && m_d==rhs.m_d)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+
+    }
 
 }
 
@@ -149,14 +189,31 @@ Quaternion<T>& Quaternion<T>::operator -(T _scalar)
     return *this;
 
 }
+
+template <typename T>
+Quaternion<T>& Quaternion<T>::operator -()
+{
+    m_a=-m_a;
+    m_b=-m_b;
+    m_c=-m_c;
+    m_d=-m_d;
+
+
+    return *this;
+
+}
+
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator *(const Quaternion<T>& rhs)
 {
+
     T tmp[3];
     tmp[0]=(rhs.m_a*m_a)-(rhs.m_b*m_b)-(rhs.m_c*m_c)-(rhs.m_d*m_d);
     tmp[1]=(rhs.m_a*m_b)+(rhs.m_b*m_a)-(rhs.m_c*m_d)+(rhs.m_d*m_c);
     tmp[2]=(rhs.m_a*m_c)+(rhs.m_b*m_d)+(rhs.m_c*m_a)-(rhs.m_d*m_b);
-    tmp[2]=(rhs.m_a*m_d)-(rhs.m_b*m_c)+(rhs.m_c*m_b)+(rhs.m_d*m_a);
+    tmp[3]=(rhs.m_a*m_d)-(rhs.m_b*m_c)+(rhs.m_c*m_b)+(rhs.m_d*m_a);
+
+
 
     m_a=tmp[0];
     m_b=tmp[1];
@@ -209,6 +266,11 @@ Quaternion<T>& Quaternion<T>::operator *(T _scalar)
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator /(T _scalar)
 {
+    if(_scalar==0)
+    {
+        throw std::out_of_range("Cannot divide by 0");
+    }
+
     m_a/=_scalar;
     m_b/=_scalar;
     m_c/=_scalar;
@@ -226,7 +288,7 @@ void Quaternion<T>::print()
 }
 
 template <typename T>
-T Quaternion<T>::length()
+T Quaternion<T>::norm()
 {
     T length = sqrt((m_a*m_a)+(m_b*m_b)+(m_c*m_c)+(m_d*m_d));
 
@@ -236,13 +298,23 @@ T Quaternion<T>::length()
 template <typename T>
 Quaternion<T>& Quaternion<T>::normalize()
 {
+    // if norm is 0 quaternion must be 0,0,0,0 hence just return the original quaternion
+    if(norm()==0)
+    {
+        return *this;
+    }
+    else
+    {
 
-    m_a=m_a/length();
-    m_b=m_b/length();
-    m_c=m_c/length();
-    m_d=m_d/length();
+    T n =norm();
+
+    m_a=m_a/n;
+    m_b=m_b/n;
+    m_c=m_c/n;
+    m_d=m_d/n;
 
     return *this;
+    }
 
 }
 
@@ -260,8 +332,17 @@ Quaternion<T>& Quaternion<T>::conjugate()
 template <typename T>
 Quaternion<T>& Quaternion<T>::inverse()
 {
+    // if norm is 0 quaternion must be 0,0,0,0 hence just return the original quaternion
+    if(norm()==0)
+    {
+        return *this;
+    }
+
+    T normSqr= norm()*norm();
+
+    //Quaternion Inv = conjugate()/normSqr;
 
 
-    return conjugate()/(length()*length());
+    return conjugate()/normSqr;
 }
 #endif // QUARTERNION_H

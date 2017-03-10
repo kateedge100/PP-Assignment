@@ -6,8 +6,6 @@
 #include "quaternion.h"
 
 
-#define PI 3.14159265359
-
 template <typename T, size_t ROWS=0, size_t COLS=0>
 
 class Matrix
@@ -22,7 +20,7 @@ private:
 
     T m_data[ROWS][COLS];
 
-    // stores if vector after testing if matrix has more then one Col hence is a vector
+    // stores if vector after testing if matrix has one col or one row hence is a vector
     bool m_vector = false;
 
     // function to check for a valid row and column range.
@@ -100,8 +98,8 @@ public:
     operator* ( Matrix<T,COLS,N>& rhs);
     Matrix& inverse();
     T determinant();
-    Matrix& minorMatrix(int _row, int _col);
-    Matrix& transpose();   
+    Matrix&  minorMatrix(int _row, int _col);
+    Matrix& transpose();
     bool orthogonal();
 
 
@@ -109,7 +107,7 @@ public:
 
     float magnitude();
     // divide one vector by another
-    Matrix& operator/ (const Matrix<T,ROWS,COLS>& rhs);
+    Matrix& operator/ (Matrix<T,ROWS,COLS>& rhs);
     // dot product
     float dot(Matrix<T,ROWS,COLS>& rhs);
     // angle betwwen vectors
@@ -117,7 +115,9 @@ public:
     // cross product
     Matrix& cross(Matrix<T,ROWS,COLS>& rhs);
     // rotates vector by angle _angle
-    Matrix& rotateVector(double _angle);
+    Matrix& rotateVector(T _angle, const char* _axis);
+    // normalizes vector
+    Matrix& normalizeVector();
 
     //resize matrix or vector
     void resize(int _rows, int _cols);
@@ -145,7 +145,7 @@ Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
     if(ROWS==1 || COLS==1)
     {
         m_vector=true;
-        std::cout<<"is a vector \n";
+        //std::cout<<"is a vector \n";
     }
 
 
@@ -178,9 +178,10 @@ Matrix< T,ROWS,COLS>::Matrix(const Matrix<T,ROWS,COLS>& rhs)
 template <typename T, size_t ROWS, size_t COLS>
 Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 {
+    // thorws error if too many values in initializer list, if too few remaining vaules remain 0
+    if(data.size()>ROWS*COLS)
+        throw std::out_of_range("Too many elements initialized");
     // copies the initializer lists data to m_data
-    if(data.size()!=ROWS*COLS)
-        throw std::out_of_range("Not the correct number of elements initialized");
     std::copy(data.begin(),data.end(),&m_data[0][0]);
 }
 
@@ -468,8 +469,12 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (T scalar)
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T scalar)
 {
+    if(scalar==0)
+    {
+        throw std::out_of_range("Cannot divide by 0");
+    }
 
-    //std::copy(rhs.begin(),rhs.end(), begin());
+
     for(int i=0; i<ROWS; i++)
     {
         for(int j=0; j<COLS; j++)
@@ -530,22 +535,34 @@ template <typename T, size_t ROWS, size_t COLS>
 const T& Matrix< T,ROWS,COLS>::operator()(std::size_t rowID,std::size_t colID) const
 {
     rangeCheck(rowID,colID);
-  return const_cast<T&>(m_data[rowID][colID]);
+  return const_cast<T&>(m_data[rowID-1][colID-1]);
 }
 
 //----------------------------------------------------------------------------------------------
 
 /// Division operator for vector and vector
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (const Matrix<T,ROWS,COLS>& rhs)
+Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ ( Matrix<T,ROWS,COLS>& rhs)
 {
     vectorCheck();
     rhs.vectorCheck();
 
-    for(int i = 0; i< COLS; i++)
+    if(m_rows==1)
     {
-        m_data[0][i]=m_data[0][i]/rhs.m_data[0][i];
+       for(int i = 0; i< COLS; i++)
+       {
+          m_data[0][i]=m_data[0][i]/rhs.m_data[0][i];
+       }
     }
+
+    else if(m_cols==1)
+    {
+       for(int i = 0; i< ROWS; i++)
+       {
+          m_data[i][0]=m_data[i][0]/rhs.m_data[i][0];
+       }
+    }
+
 
     return *this;
 
@@ -559,17 +576,30 @@ float Matrix<T, ROWS, COLS>::magnitude()
 {
     vectorCheck();
 
+
     T sum = 0;
     float mag = 0;
 
+    if(m_rows == 1)
+    {
     for( int i = 0; i< COLS; i++)
     {
         sum += (m_data[0][i] * m_data[0][i]);
     }
+    }
+
+    if(m_cols == 1)
+    {
+    for( int i = 0; i< ROWS; i++)
+    {
+        sum += (m_data[i][0] * m_data[i][0]);
+    }
+    }
+
+
 
     mag= sqrt(sum);
 
-    std::cout<<"magnitude is "<<mag<<"\n";
 
     return mag;
 
@@ -588,13 +618,26 @@ float Matrix<T,ROWS,COLS>::dot( Matrix<T,ROWS,COLS>& rhs)
 
     float dotProd = 0;
 
+    if(m_rows == 1)
+    {
     for(int i = 0; i<COLS; i++)
     {
         dotProd+=m_data[0][i]*rhs.m_data[0][i];
 
     }
+    }
 
-    std::cout<<"The dot product is "<<dotProd<< "\n";
+    else if(m_cols == 1)
+    {
+    for(int i = 0; i<COLS; i++)
+    {
+        dotProd+=m_data[i][0]*rhs.m_data[i][0];
+
+    }
+    }
+
+
+    //std::cout<<"The dot product is "<<dotProd<< "\n";
 
 
 
@@ -628,9 +671,8 @@ float Matrix<T,ROWS,COLS>::angle( Matrix<T,ROWS,COLS>& rhs)
 
 
     // calculate angle then change from radians to degrees
-    angle = (180/PI)*acos(cosAngle);
+    angle = (180/M_PI)*acos(cosAngle);
 
-    std::cout<<"The angle between these vectors is "<<angle<< "\n";
 
 
     return angle;
@@ -643,7 +685,7 @@ float Matrix<T,ROWS,COLS>::angle( Matrix<T,ROWS,COLS>& rhs)
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
 {
-    if( COLS !=3)
+    if( ROWS*COLS != 3)
         throw std::out_of_range("You must use a 3D vector for the cross product function");
 
     vectorCheck();
@@ -660,6 +702,10 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
         }
     }
 
+    // col vector
+    if(m_rows==1)
+    {
+
     tmp[0][0]= m_data[0][1]*rhs.m_data[0][2] - m_data[0][2]*rhs.m_data[0][1];
     tmp[0][1]= m_data[0][2]*rhs.m_data[0][0] - m_data[0][0]*rhs.m_data[0][2];
     tmp[0][2]= m_data[0][0]*rhs.m_data[0][1] - m_data[0][1]*rhs.m_data[0][0];
@@ -667,13 +713,28 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& rhs)
     // assignning the tmp matrix's values to m_data
     for(int i=0; i<COLS; i++)
     {
-
-
           m_data[0][i]=tmp[0][i];
-
-          //std::cout<<m_data[0][i]<<"\n";
+    }
 
     }
+
+    // row vector
+    else if(m_cols==1)
+    {
+
+    tmp[0][0]= m_data[1][0]*rhs.m_data[2][0] - m_data[2][0]*rhs.m_data[1][0];
+    tmp[1][0]= m_data[2][0]*rhs.m_data[0][0] - m_data[0][0]*rhs.m_data[2][0];
+    tmp[2][0]= m_data[0][0]*rhs.m_data[1][0] - m_data[1][0]*rhs.m_data[0][0];
+
+    // assignning the tmp matrix's values to m_data
+    for(int i=0; i<ROWS; i++)
+    {
+          m_data[0][i]=tmp[0][i];
+    }
+
+    }
+
+
 
     return *this;
 
@@ -814,7 +875,7 @@ T Matrix< T,ROWS,COLS>::determinant()
 
         determinant = m_data[0][0] * inv[0][0] + m_data[0][1] * inv[1][0] + m_data[0][2] * inv[2][0] + m_data[0][3] * inv[3][0];
 
-        determinant = 1.0 / determinant;
+        //determinant = 1.0 / determinant;
     }
 
     return determinant;
@@ -829,7 +890,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
     if( ROWS != COLS)
         throw std::out_of_range("You must use a square matrix for the inverse function");
 
-    std::cout<<"inverse called \n";
+    //std::cout<<"inverse called \n";
 
     T tmp[ROWS][COLS];
 
@@ -878,15 +939,15 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
         throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
 
 
-     std::cout<<"\nInverse of matrix is: \n\n";
+     //std::cout<<"\nInverse of matrix is: \n\n";
      for(int i=0;i<3;i++){
 
         for(int j=0;j<3;j++)
         {
 
-             tmp[i][j] = ((m_data[(i+1)%3][(j+1)%3] * m_data[(i+2)%3][(j+2)%3]) - (m_data[(i+1)%3][(j+2)%3]*m_data[(i+2)%3][(j+1)%3]))/ determinant();
+             tmp[j][i] = ((m_data[(i+1)%3][(j+1)%3] * m_data[(i+2)%3][(j+2)%3]) - (m_data[(i+1)%3][(j+2)%3]*m_data[(i+2)%3][(j+1)%3]))/ determinant();
 
-             std::cout<<tmp[i][j]<<"\n";
+             //std::cout<<tmp[i][j]<<"\n";
 
 
         }
@@ -898,6 +959,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
      if(ROWS==4)
      {
         T inv[4][4];
+
+        T det = 0;
 
         // initilize inv matrix values to zero
         for(int i = 0; i<ROWS; i++)
@@ -1030,13 +1093,14 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
                  throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
 
 
+             det=1.0/determinant();
 
               for(int i = 0; i<ROWS; i++)
               {
                   for( int j = 0; j<COLS; j++)
                   {
 
-                     tmp[i][j] = inv[i][j] * determinant();
+                     tmp[i][j] = inv[i][j] * det;
                      //std::cout<<"final inverse matrix"<<tmp[i][j]<<"\n";
                   }
              }                     
@@ -1063,18 +1127,29 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 //----------------------------------------------------------------------------------------------
 
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::transpose()
+Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
 {
     std::cout<<"transpose \n";
 
     T tmp[COLS][ROWS];
 
+    for(int i = 0;i<COLS;i++)
+       {
+           for(int j = 0;j< ROWS;j++)
+           {
+
+               tmp[i][j]=0;
+
+           }
+
+       }
+
     for(int i = 0; i< ROWS; i++)
     {
         for(int j = 0; j < COLS; j++)
         {
-            tmp[j][i]=m_data[i][j];
-            //std::cout<<tmp[j][i]<<" tmp \n";
+            tmp[j][i]= m_data[i][j];
+            std::cout<<tmp[j][i]<<" tmp \n";
 
         }
     }
@@ -1082,16 +1157,26 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::transpose()
 
     resize(COLS,ROWS);
 
-    for(int i = 0; i<COLS; i++)
+    std::cout<<m_rows<<" m_rows resized \n";
+    std::cout<<m_cols<<" m_rows resized \n";
+
+    print();
+
+    for(int i = 0; i<m_rows; i++)
     {
-        for( int j = 0; j<ROWS; j++)
+        for( int j = 0; j<m_cols; j++)
         {
 
             m_data[i][j]=tmp[i][j];
-            //std::cout<<m_data[i][j]<<" m_data resized \n";
+            std::cout<<i<<j<<m_data[i][j]<<" m_data resized \n";
+
+            std::cout<<m_data[0][2]<< " \n";
 
         }
+        std::cout<<m_data[0][2]<< " \n";
     }
+
+    std::cout<<m_data[0][2]<< " \n";
 
 
 
@@ -1116,30 +1201,37 @@ bool Matrix< T,ROWS,COLS>::orthogonal()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// rotates by angle _angle counter clockwise around the selected origin
 template <typename T, size_t ROWS, size_t COLS>
-Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
+Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(T _angle,const char* _axis)
 {
-    //std::cout<<"vector rotate \n";
+
     vectorCheck();
 
-//std::cout<<"vector rotate \n";
+    if(m_cols!=1)
+    {
+        throw std::out_of_range("Must use a column vector for rotation eg Matrix<float,3,1>");
+    }
 
-    T rotMat [m_rows][m_rows];
+    if(m_rows!= 2 && m_rows !=3)
+    {
+        throw std::out_of_range("Only 2D and 3D vectors are supported for rotation");
+    }
+
 
     for(int i = 0; i < m_rows; i++)
     {
         for(int j; j< m_cols; j++)
         {
-            rotMat[i][j]=0;
+            //rotMat[i][j]=0;
         }
     }
 
-    T tmp [m_rows][1];
+    T tmp [m_rows];
 
     for(int i = 0 ;i<m_rows;i++)
     {
-        tmp[i][0]=0;
+        tmp[i]=0;
     }
 
 
@@ -1147,14 +1239,10 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
     //convert to radians
     double angle= _angle * (M_PI /180);
 
-    if(m_cols!=1)
-    {
-        throw std::out_of_range("Must use a column vector for rotation");
-    }
 
     // if 2d column vector use 2d rotation matrix
     if(m_rows==2)
-    {
+    {T rotMat [m_rows][m_rows];
 
         // counter clockwise around the origin
         rotMat[0][0]=cos(angle);
@@ -1169,8 +1257,8 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
         {
             for(int j = 0; j < 2; j++)
             {
-                tmp[i][1]+=rotMat[i][j]*m_data[j][1];
-                std::cout<<tmp[i][1]<<" \n";
+                tmp[i]+=rotMat[i][j]*m_data[j][0];
+
             }
         }
     }
@@ -1178,21 +1266,46 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
         // if 3d vector use 3d rotation matrix
         if(m_rows==3)
         {
-//            switch(_axis)
-//            {
-//                case "x" :
-//                rotMat={1,0,0,0,cos(_angle),-sin(_angle),0,sin(-angle),cos(_angle)};
-//                case "y" :
-//                rotMat={cos(_angle),0,sin(_angle),0,1,0,-sin(_angle),0,cos(-angle)};
-//                case "z" :
-//                rotMat={cos(_angle),-sin(_angle),0,sin(_angle),cos(_angle),0,0,0,1};
-//            }
+            if(_axis == "x"){T rotMat [3][3]={1,0,0,0,cos(angle),-sin(angle),0,sin(-angle),cos(angle)};
+
+                for(int i = 0; i < 3; i ++)
+                {
+                    for(int j = 0; j < 3; j++)
+                    {
+                        tmp[i]+=rotMat[i][j]*m_data[j][0];
+
+                    }
+                }}
+            if(_axis == "y"){T rotMat [3][3]={cos(angle),0,sin(angle),0,1,0,-sin(angle),0,cos(-angle)};
+
+                for(int i = 0; i < 3; i ++)
+                {
+                    for(int j = 0; j < 3; j++)
+                    {
+                        tmp[i]+=rotMat[i][j]*m_data[j][0];
+
+                    }
+                }
+            }
+            if(_axis == "z"){T rotMat [3][3]={cos(angle),-sin(angle),0,sin(angle),cos(angle),0,0,0,1};
+
+                for(int i = 0; i < 3; i ++)
+                {
+                    for(int j = 0; j < 3; j++)
+                    {          
+                        tmp[i]+=rotMat[i][j]*m_data[j][0];
+
+                    }
+                }
+            }
+
+
 
         }
 
         for(int i = 0; i < m_rows; i ++)
         {
-            m_data[i][1]=tmp[i][1];
+            m_data[i][0]=tmp[i];
 
         }
 
@@ -1200,19 +1313,94 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
 
     return *this;
 
+
 }
 
 //----------------------------------------------------------------------------------------------
 
-//template <typename T, size_t ROWS, size_t COLS>
-//void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
-//{
+template <typename T, size_t ROWS, size_t COLS>
+Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::normalizeVector()
+{
+    vectorCheck();
 
-//    m_data[m_rows][m_cols]=m_data[_rows][_cols];
+    T mag=magnitude();
 
-//    //std::cout<<m_data[2][0]<<"\n";
-//    //std::cout<<m_cols;
-//    //m_data[0][3]=0;
+    if(m_rows==1)
+    {
+        for(int i=0; i<m_cols; i++)
+        {           
+            m_data[0][i]=m_data[0][i]/mag;
+
+        }
+    }
+
+    if(m_cols==1)
+    {
+        for(int i=0; i<m_rows; i++)
+        {
+            m_data[i][0]=m_data[i][0]/mag;
+            //std::cout<<m_data[i][0]<<"\n";
+        }
+    }
+
+
+    return *this;
+}
+
+//----------------------------------------------------------------------------------------------
+
+template <typename T, size_t ROWS, size_t COLS>
+void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
+{
+    if(ROWS*COLS != _rows*_cols)
+    {
+        throw std::out_of_range("Must resize to matrix with same number of elements, eg 2x3 to 3x2");
+    }
+
+    std::cout<<" resized called \n";
+
+//    T tmp[m_cols][m_ros];
+
+//    for(int i = 0;i<m_rows;i++)
+//       {
+//           for(int j = 0;j< m_cols;j++)
+//           {
+
+//               tmp[i][j]=0;
+
+//           }
+
+//       }
+
+//    for(int i = 0;i<m_rows;i++)
+//       {
+//           for(int j = 0;j< m_cols;j++)
+//           {
+
+//               tmp[i][j]=m_data[i][j];
+//               std::cout<<tmp[i][j]<<" resize tmp \n";
+
+//           }
+
+//       }
+
+    m_data[m_rows][m_cols]=m_data[_rows][_cols];
+
+
+    //std::cout<<m_data[2][0]<<"\n";
+    //std::cout<<m_cols;
+    //m_data[0][3]=0;
+
+//    for(int i = 0;i<m_rows;i++)
+//       {
+//           for(int j = 0;j< m_cols;j++)
+//           {
+
+//               m_data[i][j]=tmp[j][i];
+//               std::cout<<m_data[i][j]<<" resize new element \n";
+//           }
+
+//       }
 
 
 //    // initialize new column elements to zero
@@ -1239,11 +1427,24 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(double _angle)
 
 //    }
 
+    m_rows=_rows;
+    m_cols=_cols;
+
+    for(int i = 0;i<m_rows;i++)
+           {
+               for(int j = 0;j< m_cols;j++)
+               {
+
+                   m_data[i][j]=0;
+                   //std::cout<<m_data[i][j]<<" resize new element \n";
+               }
+
+           }
 
 
-//    m_rows=_rows;
-//    m_cols=_cols;
-//}
+
+
+}
 
 //----------------------------------------------------------------------------------------------
 
