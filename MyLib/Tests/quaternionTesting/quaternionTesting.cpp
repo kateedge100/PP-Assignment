@@ -178,13 +178,13 @@ TEST(QuaternionFunction,ConjugateFunction)
 // fix inverse -0 error
 //TEST(QuaternionFunction,InverseFunction)
 //{
-//    Quaternion<float> q(1,0,1,0);
+//    Quaternion<float> q(1.0f,0.0f,1.0f,0.0f);
 //    Quaternion<float> q2;
-//    Quaternion<float> result(0.5,-0,-0.5,-0);
+//    Quaternion<float> result(0.5f,0.0f,-0.5f,0.0f);
 
-//    q2=q.inverse();
-//    q2.print();
-//    result.print();
+
+////    q2=q.inverse();
+////    q.print();
 
 
 //    EXPECT_TRUE(q.inverse() == result );
@@ -194,19 +194,14 @@ TEST(QuaternionFunction,ConjugateFunction)
 TEST(QuaternionFunction,InverseFunction)
 {
 
-    Quaternion<double> q(1.0f,2.0f,-1.0f,-3.0f);
-    Quaternion<double> q2;
+    Quaternion<float> q(1.0f,2.0f,-1.0f,-3.0f);
+    Quaternion<float> q2;
     Quaternion<float> error(0.00001f,0.00001f,0.00001f,0.00001f);
-    Quaternion<double> result(1.0f/15.0f,-2.0f/15.0f,1.0f/15.0f,1.0f/5.0f);
-
-    q2=q.inverse();
+    Quaternion<float> result(1.0f/15.0f,-2.0f/15.0f,1.0f/15.0f,3.0f/15.0f);
 
 
-    q2.print();
-    result.print();
 
-
-    EXPECT_TRUE(q2==result);
+    EXPECT_TRUE(q.inverse()==result);
 
 }
 
