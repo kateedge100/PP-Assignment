@@ -5,7 +5,7 @@ This is the README for my maths library, the submitted folder contains the folde
 MyLib: Contains all header files for my library as well as header files GLFunctions.h and SDLOpenGL.h used for the demo program.
        Also contains the folder Tests containing tests for matrices, vectors and functions.
 
-LibDemo: Contains a simple OpenGL programme (originallt written by Jon Macey) and modified by me to run using my maths library.
+LibDemo: Contains a simple OpenGL programme (originally written by Jon Macey) and modified by me to run using my maths library.
 
 TestProgram:  A test program set up with my library in order to assist in trying out the libraries features and make it easier to mark.
 
@@ -25,13 +25,17 @@ Matrix<int,2,3> myMatrix={1,2,3,4,5,6};
 Individually:
 
 Matrix<int,2,3> myMatrix;
+
 myMatrix(1,1)= 1;
+
 myMatrix(1,2)= 2;
 
 The values of one matrix can also be assignned to another:
 
 Matrix<int,2,3> myMatrix={1,2,3,4,5,6};
+
 Matrix<int,2,3> newMatrix;
+
 newMatrix = myMatrix;
 
 - Matrix Operators:
@@ -44,7 +48,7 @@ newMatrix = myMatrix;
   - negative - (matrix only)
 
 
--Matrix Functions:
+- Matrix Functions:
   -Inverse
   -Determinant
   -Minor Matrix
