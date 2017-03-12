@@ -35,7 +35,7 @@ private:
     // function to check for a valid row and column range.
     void rangeCheck(std::size_t rowID, std::size_t _colID);
 
-    // function to check if matrix is a vector
+    // function to check if matrix is a vector, used when you want to check if its a vector without throwing an error if it is
     void vectorCheck();
 
 public:
@@ -145,9 +145,9 @@ public:
 
 //----------------------------------------------------------------------------------------------
 
-/// Default constructor, sets all values to type T and equil to zero
+///@brief Default constructor, sets all values of m_data equil to zero, also determnines if the cretaed matrix is a vector or not
 template <typename T, size_t ROWS, size_t COLS>
-Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
+Matrix< T,ROWS,COLS>::Matrix()
 {
   for (int r=0; r < ROWS; ++r)
   {
@@ -164,8 +164,7 @@ Matrix< T,ROWS,COLS>::Matrix() // DEFAULT CONSTRUCTOR
   }
 }
 //----------------------------------------------------------------------------------------------
-
-/// Copy constructor
+///@brief Copy constructor
 template <typename T, size_t ROWS, size_t COLS>
 Matrix< T,ROWS,COLS>::Matrix(const Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -180,10 +179,11 @@ Matrix< T,ROWS,COLS>::Matrix(const Matrix<T,ROWS,COLS>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Initializer list constructor
-/// Allows user to construct a matrix or vector using an initializer list to assign its values
+/// @brief Initializer list constructor, allows user to construct a matrix or vector using an initializer list to assign its values
 /// Borrowed from Jon Macey code from Array.h
+/// Modified from :-
+/// Jon Macey (January 5th, 2017). Array.h [online].
+/// [Accessed Jan 2017]. Available from: "http://www.github.com/".
 template <typename T, size_t ROWS, size_t COLS>
 Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 {
@@ -197,8 +197,8 @@ Matrix< T,ROWS,COLS>::Matrix(std::initializer_list<T> data)
 }
 
 //----------------------------------------------------------------------------------------------
-
-//Assignment operator, variable sized matrices (for matrix multiplication assignment)
+/// @brief Assignment operator for variable sized matrices, needed for matrix multiplication.
+/// param[in] _rhs, the matrix or vector that the first matrix or vector will be assigned too
 template <typename T, size_t ROWS, size_t COLS>
 template<size_t N,size_t M>
 Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,N,M>& _rhs)
@@ -217,8 +217,8 @@ Matrix<T,ROWS,COLS> Matrix< T,ROWS,COLS>::operator= ( Matrix<T,N,M>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Assignment Operator
+/// @brief Asignment Operator
+/// param[in] _rhs, the matrix or vector that the first matrix or vector will be assigned too
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -237,8 +237,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>&
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Equility Operator
+/// @brief Equility Operator, tests if vectors or matrices are equil and returns true if they are
+/// param[in] _rhs, the matrix or vector to test that the first vector or matrix equils
 template <typename T, size_t ROWS, size_t COLS>
 bool Matrix< T,ROWS,COLS>::operator== (const Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -257,8 +257,8 @@ bool Matrix< T,ROWS,COLS>::operator== (const Matrix<T,ROWS,COLS>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Addition operator for matrix/vector and matrix/vector addition
+/// @brief Addition operator for matrix/vector and matrix/vector addition
+/// param[in] _rhs, the vector or matrix that is added to the first vector or matrix
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (const Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -278,8 +278,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (const Matrix<T,ROWS,COLS>&
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Addition operator for _scalar and matrix/vector addition
+/// @brief Addition operator for matrix/vector addition by a scalar amount
+/// param[in] _scalar, amount to add to each value of m_data for the given matrix/vector
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (T _scalar)
 {
@@ -298,8 +298,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator+ (T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Subtraction operator for matrix/vector and matrix/vector subtraction
+/// @brief Subtraction operator for matrix/vector and matrix/vector subtraction
+/// param[in] _rhs, the vector or matrix that is subtracted from the first vector or matrix
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (const Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -320,7 +320,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (const Matrix<T,ROWS,COLS>&
 
 //----------------------------------------------------------------------------------------------
 
-/// Subtraction operator for matrix/vector and _scalar subtration
+/// @brief Subtraction operator for matrix/vector subtration by a scalar amount
+/// param[in] _scalar, amount to subtract from each value of m_data for the given matrix/vector
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (T _scalar)
 {
@@ -340,8 +341,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- (T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Negative operator
+/// @brief Negative operator, returns each value of the matrix or vector with the opposite sign
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- ()
 {
@@ -361,20 +361,21 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator- ()
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Matrix multiplication operator
+/// @brief Multiplication operator for multiplying two matrices or vectors, the first matrix must have the same number of columns and the second has rows
+/// param[in] _rhs, the matrix/vector at the first matrix/vector is multiplied by
+/// For loop for multiplying vectors referenced from stackoverflow.com, [accessed Jan 2017](avaiable at http://stackoverflow.com/questions/10162467/matrix-multiplication-in-c)
 template <typename T, size_t ROWS, size_t COLS>
 template<size_t N>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& _rhs)
 {
+  if( COLS!=_rhs.getRows())
+  {
+    throw std::out_of_range("number of columns of matrix 1 must be equil to number of rows of matrix 2");
+  }
+
   // matrix-matrix multiplication
   if(m_vector == false)
   {
-    if( COLS!=_rhs.getRows())
-    {
-      throw std::out_of_range("number of columns of matrix 1 must be equil to number of rows of matrix 2");
-    }
-
     // initialize tmp matrix values to 0
     T tmp[m_rows][_rhs.getCols()];
 
@@ -399,9 +400,6 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& _rhs)
       }
     }
 
-    // resizes matrix to 1st matrix rows x second matrix cols
-    //resize(m_rows,_rhs.getCols());
-
     // assignning the tmp matrix's values to m_data
     for(int i=0; i<m_rows; i++)
     {
@@ -415,6 +413,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& _rhs)
   // vector vector multiplication
   else if (m_vector == true)
   {
+
     for(int i = 0; i < COLS; i++)
     {
         m_data[0][i]=m_data[0][i]*_rhs.data(0,i);
@@ -427,8 +426,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* ( Matrix<T,COLS, N>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Multiplication opertor for matrix/vector and _scalar
+/// @brief Multiplication opertor for matrix/vector and _scalar
+/// param[in] _scalar, the value to multiple each value of m_data of the given matrix/vector by
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (T _scalar)
 {
@@ -446,8 +445,8 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator* (T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Division operator for matrix/vector and _scalar
+/// @brief Division operator for matrix/vector and _scalar
+/// param[in] _scalar, the value to divide each value of m_data of the given matrix/vector by
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T _scalar)
 {
@@ -471,8 +470,9 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ (T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Checks rows and columns are in correct range
+/// @brief Checks rows and columns are in correct range, eg if you want the first row you would write 1 opposed to 0.
+/// param[in] _rowID, the row you would like to check is within 0 and the number of rows.
+/// param[in] _colID, the column you would like to check is within 0 and the number of columns.
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix<T,ROWS,COLS>::rangeCheck(std::size_t _rowID,std::size_t _colID)
 {
@@ -484,8 +484,7 @@ void Matrix<T,ROWS,COLS>::rangeCheck(std::size_t _rowID,std::size_t _colID)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Checks that function is being applied to a vector not a matrix
+/// @brief Checks that function is being applied to a matrix not a vector, throws error if it is a vector.
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix<T, ROWS, COLS>::vectorCheck()
 {
@@ -497,8 +496,9 @@ void Matrix<T, ROWS, COLS>::vectorCheck()
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Subscript operator used to view or edit values of matrix/vector based on row and column
+/// @brief Subscript operator used to view values of matrix/vector based on row and column, starts at 1 not zero, eg first value is (1,1)
+/// param[in] _rowID, the row of the data you would like to access (1 for first row).
+/// param[in] _colID, the column of the data you would like to access (1 for first column).
 template <typename T, size_t ROWS, size_t COLS>
 T& Matrix< T,ROWS,COLS>::operator()(std::size_t _rowID,std::size_t _colID)
 {
@@ -508,8 +508,9 @@ T& Matrix< T,ROWS,COLS>::operator()(std::size_t _rowID,std::size_t _colID)
 
 
 //----------------------------------------------------------------------------------------------
-
-/// Subscript operator used to view values of matrix/vector based on row and column (read only)
+/// @brief Subscript operator used to view values of matrix/vector based on row and column (read only)
+/// param[in] _rowID, the row of the data you would like to view (1 for first row).
+/// param[in] _colID, the column of the data you would like to view (1 for first column).
 template <typename T, size_t ROWS, size_t COLS>
 const T& Matrix< T,ROWS,COLS>::operator()(std::size_t _rowID,std::size_t _colID) const
 {
@@ -518,8 +519,8 @@ const T& Matrix< T,ROWS,COLS>::operator()(std::size_t _rowID,std::size_t _colID)
 }
 
 //----------------------------------------------------------------------------------------------
-
-/// Division operator for vector and vector
+/// @brief Division operator for vector and vector
+/// param[in] _rhs, the vector that the will be used to divide the other vector by
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ ( Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -547,7 +548,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator/ ( Matrix<T,ROWS,COLS>& _rhs
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the magnitude of the given vector
 template <typename T, size_t ROWS, size_t COLS>
 float Matrix<T, ROWS, COLS>::magnitude()
 {
@@ -579,7 +580,8 @@ float Matrix<T, ROWS, COLS>::magnitude()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief The dot product of the given vector and another vector passed in as a parameter
+/// param[in] _rhs, the second vector that will be used to find the dot product
 template <typename T, size_t ROWS, size_t COLS>
 float Matrix<T,ROWS,COLS>::dot( Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -609,7 +611,8 @@ float Matrix<T,ROWS,COLS>::dot( Matrix<T,ROWS,COLS>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the angle between two vectors
+/// param[in] _rhs, the angle is found between the applied to vector and this vector
 template <typename T, size_t ROWS, size_t COLS>
 float Matrix<T,ROWS,COLS>::angle( Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -641,7 +644,8 @@ float Matrix<T,ROWS,COLS>::angle( Matrix<T,ROWS,COLS>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Finds the cross product of two vectors
+/// param[in] the second vector that is used to find the cross product
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& _rhs)
 {
@@ -699,7 +703,9 @@ Matrix<T, ROWS, COLS>& Matrix<T, ROWS, COLS>::cross( Matrix<T,ROWS,COLS>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief finds the minor matrix of a matrix
+/// param[in] _row, the row to be excluded from the original matrix in order to find the minor matrix
+/// param[in] _col, the column to be excluded from the original matrix in order to find the minor matrix
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix(int _row, int _col)
 {
@@ -760,7 +766,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::minorMatrix(int _row, int _col)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the determinant of a squre matrix, must be a 2d,3d or 4d vector
 template <typename T, size_t ROWS, size_t COLS>
 T Matrix< T,ROWS,COLS>::determinant()
 {
@@ -829,7 +835,9 @@ T Matrix< T,ROWS,COLS>::determinant()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the inverse of a square matrix, must be a 2d,3d or 4d matrix.
+/// 3X3 matrix inverse code modified from ForgotCode. [Accessed 2017]. Available from: "http://forgetcode.com/C/1781-Inverse-Matrix-of-3x3"
+/// 4x4 matrix inverse code modified from StackOverFlow. [Accessed 2017]. Available from: "http://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix"
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 {
@@ -837,6 +845,11 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
   if( ROWS != COLS)
   {
    throw std::out_of_range("You must use a square matrix for the inverse function");
+  }
+
+  if( determinant()==0)
+  {
+    throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
   }
 
   T tmp[ROWS][COLS];
@@ -857,13 +870,6 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
     tmp[1][0]=-m_data[1][0];
     tmp[1][1]= m_data[0][0];
 
-
-
-    if( determinant()==0)
-    {
-      throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
-    }
-
     for(int i = 0; i<ROWS; i++)
     {
       for( int j = 0; j<COLS; j++)
@@ -878,12 +884,6 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
   if(ROWS==3)
   {
 
-    if( determinant()==0)
-    {
-      throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
-    }
-
-    //std::cout<<"\nInverse of matrix is: \n\n";
     for(int i=0;i<3;i++)
     {
 
@@ -912,12 +912,12 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
       }
     }
 
-    inv[0][0] = m_data[1][1]  * m_data[2][2] * m_data[3][3] - //0
-                m_data[1][1]  * m_data[2][3] * m_data[3][2] -
-                m_data[2][1]  * m_data[1][2]  * m_data[3][3] +
-                m_data[2][1]  * m_data[1][3]  * m_data[3][2] +
-                m_data[3][1] * m_data[1][2]  * m_data[2][3] -
-                m_data[3][1] * m_data[1][3]  * m_data[2][2];
+    inv[0][0] = m_data[1][1] * m_data[2][2] * m_data[3][3] -
+                m_data[1][1] * m_data[2][3] * m_data[3][2] -
+                m_data[2][1] * m_data[1][2] * m_data[3][3] +
+                m_data[2][1] * m_data[1][3] * m_data[3][2] +
+                m_data[3][1] * m_data[1][2] * m_data[2][3] -
+                m_data[3][1] * m_data[1][3] * m_data[2][2];
 
 
 
@@ -1028,13 +1028,6 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
                 m_data[2][0] * m_data[0][2] * m_data[1][1];
 
 
-
-    if( determinant()==0)
-    {
-         throw std::out_of_range("An inverse doesnt exist, the determinant is 0");
-    }
-
-
     det=1.0/determinant();
 
     for(int i = 0; i<ROWS; i++)
@@ -1058,7 +1051,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief returns the transpose version of a matrix
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
 {
@@ -1108,7 +1101,7 @@ Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Tests if the matrix is orthogonal (if the inversed matrix equils the transposed matrix)
 template <typename T, size_t ROWS, size_t COLS>
 bool Matrix< T,ROWS,COLS>::orthogonal()
 {
@@ -1124,7 +1117,9 @@ bool Matrix< T,ROWS,COLS>::orthogonal()
 }
 
 //----------------------------------------------------------------------------------------------
-/// rotates by angle _angle counter clockwise around the selected origin
+/// @brief Rotates a 2d or 3d column vector by an angle counter clockwise around the selected axis (if 3d).
+/// param[in] _angle, the angle to rotate the vector by.
+/// param[in] _axis, the axis to rotate the vector around.
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(T _angle,const char* _axis)
 {
@@ -1233,7 +1228,7 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::rotateVector(T _angle,const char* _axi
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the normalized vector
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::normalizeVector()
 {
@@ -1261,7 +1256,9 @@ Matrix<T,ROWS,COLS>& Matrix<T,ROWS,COLS>::normalizeVector()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Resizes a matrix, resulting matrix must have the same number of elements as original matrix.
+/// param[in] _rows, the number of rows of the resulting matrix
+/// param[in] _cols, the number of columns of the resulting matrix
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
 {
@@ -1354,7 +1351,7 @@ void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Prints out the elements of the vector or matrix in the correct format
 template <typename T, size_t ROWS, size_t COLS>
 void Matrix< T,ROWS,COLS>::print()
 {

@@ -3,7 +3,6 @@
 #include <complex>
 #include "matrix.h"
 
-/// Quaternion in the form of a+bi+cj+dk
 
 template <typename T>
 
@@ -13,6 +12,8 @@ template <typename T>
 class Quaternion
 {
 private:
+
+    /// Quaternion in the form of a+bi+cj+dk
     T m_a;
     T m_b;
     T m_c;
@@ -28,6 +29,7 @@ public:
     // copy constructor
     Quaternion(const Quaternion<T>& _rhs);
 
+    // returns a,b,c or d
     T getData(const char *_data);
 
 
@@ -57,12 +59,14 @@ public:
     Quaternion<T>& conjugate();
     Quaternion<T>& normalize();
     Quaternion<T>& inverse();
+
+    // prints out the quaternion in the form a+bi+cj+dk
     void print();
 
 };
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Default constructor, sets all values of the quaternion equil to 0
 template <typename T>
 Quaternion<T>::Quaternion()
 {
@@ -74,7 +78,11 @@ Quaternion<T>::Quaternion()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Constructs and initializes a quaternion
+/// param[in] _a, the value m_a will be initialized to
+/// param[in] _b, the value m_b will be initialized to
+/// param[in] _c, the value m_c will be initialized to
+/// param[in] _d, the value m_d will be initialized to
 template <typename T>
 Quaternion<T>::Quaternion(T _a, T _b, T _c, T _d)
 {
@@ -86,7 +94,8 @@ Quaternion<T>::Quaternion(T _a, T _b, T _c, T _d)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Copy constructor
+/// param[in] _rhs, the quaternion whose values are copied into the original quaternion
 template <typename T>
 Quaternion<T>::Quaternion(const Quaternion<T> &_rhs)
 {
@@ -98,7 +107,8 @@ Quaternion<T>::Quaternion(const Quaternion<T> &_rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the value of m_a,m_b,m_c or m_d
+/// param[in] _data, the value to return
 template <typename T>
 T Quaternion<T>::getData(const char* _data)
 {
@@ -116,7 +126,8 @@ T Quaternion<T>::getData(const char* _data)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Assignment operator
+/// param[in] _rhs, the quaternion to assign its values to the original quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator =(const Quaternion<T>& _rhs)
 {
@@ -129,7 +140,8 @@ Quaternion<T>& Quaternion<T>::operator =(const Quaternion<T>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Equility operator
+/// param[in] _rhs, the quaternion to check if equils the original quaternion
 template <typename T>
 bool Quaternion<T>::operator ==(const Quaternion<T>& _rhs)
 {
@@ -145,7 +157,8 @@ bool Quaternion<T>::operator ==(const Quaternion<T>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Addition operator
+/// param[in] _rhs, the quaternion the add to the original quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator +(const Quaternion<T>& _rhs)
 {
@@ -159,7 +172,8 @@ Quaternion<T>& Quaternion<T>::operator +(const Quaternion<T>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Addition operator (scalar)
+/// param[in] _scalar, the scalar value to add the each value of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator +(T _scalar)
 {
@@ -173,6 +187,8 @@ Quaternion<T>& Quaternion<T>::operator +(T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
+/// @brief Subtraction operator
+/// param[in] _rhs, the quaternion to subtract from the original quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator -(const Quaternion<T>& _rhs)
 {
@@ -186,7 +202,8 @@ Quaternion<T>& Quaternion<T>::operator -(const Quaternion<T>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Subtraction operator (scalar)
+/// param[in] _scalar, the scalar value to subtract from each value of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator -(T _scalar)
 {
@@ -200,7 +217,7 @@ Quaternion<T>& Quaternion<T>::operator -(T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Negative operator, returns negative value of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator -()
 {
@@ -214,7 +231,8 @@ Quaternion<T>& Quaternion<T>::operator -()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Multiplication operator
+/// param[in] _rhs, the quaternion to multiply the first quaternion by
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator *(const Quaternion<T>& _rhs)
 {
@@ -235,7 +253,8 @@ Quaternion<T>& Quaternion<T>::operator *(const Quaternion<T>& _rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Multiplication operator (scalar)
+/// param[in] _scalar, the scalar value to add to each value of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator *(T _scalar)
 {
@@ -276,7 +295,8 @@ Quaternion<T>& Quaternion<T>::operator *(T _scalar)
 //}
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Division operator (scalar)
+/// param[in] _scalar, the scalar value to divide each value of the quaternion by
 template <typename T>
 Quaternion<T>& Quaternion<T>::operator /(T _scalar)
 {
@@ -295,7 +315,7 @@ Quaternion<T>& Quaternion<T>::operator /(T _scalar)
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Prints out the values of the quaternion in the format a + bi + cj + dk
 template <typename T>
 void Quaternion<T>::print()
 {
@@ -303,7 +323,7 @@ void Quaternion<T>::print()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the norm of a quaternion (sometimes referred to as legnth)
 template <typename T>
 T Quaternion<T>::norm()
 {
@@ -313,7 +333,7 @@ T Quaternion<T>::norm()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// Returns the normalized version of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::normalize()
 {
@@ -336,7 +356,7 @@ Quaternion<T>& Quaternion<T>::normalize()
 }
 
 //----------------------------------------------------------------------------------------------
-
+/// @brief Returns the conjugate of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::conjugate()
 {
@@ -348,8 +368,7 @@ Quaternion<T>& Quaternion<T>::conjugate()
 }
 
 //----------------------------------------------------------------------------------------------
-
-
+/// @brief Returns the inverse of the quaternion
 template <typename T>
 Quaternion<T>& Quaternion<T>::inverse()
 {
