@@ -34,14 +34,14 @@ Matrix<int,2,3> myMatrix={1,2,3,4,5,6};
 Matrix<int,2,3> newMatrix;
 newMatrix = myMatrix;
 
--Matrix Operators:
-  -assignment = (matrix only)
-  -equility == (matrix only)
-  -addition + (matrix or scalar)
-  -subtraction - (matrix or scalar)
-  -multiplication *(matrix or scalar)
-  -division / (scalar only)
-  -negative - (matrix only)
+- Matrix Operators:
+  - assignment = (matrix only)
+  - equility == (matrix only)
+  - addition + (matrix or scalar)
+  - subtraction - (matrix or scalar)
+  - multiplication *(matrix or scalar)
+  - division / (scalar only)
+  - negative - (matrix only)
 
 
 -Matrix Functions:
@@ -60,23 +60,23 @@ either ROWS or COLS is set to 1 upon being constructed. This means that vectors 
 For a 3D row vector:
 Matrix<float,1,3> myVec{1,2,3}
 
--Vector Operations:
- -assignment = (vector only)
- -equility == (vector only)
- -addition + (vector or scalar)
- -subtraction - (vector or scalar)
- -multiplication *(vector or scalar)
- -division / (vector or scalar)
- -negative - (vector only)
+- Vector Operations:
+ - assignment = (vector only)
+ - equility == (vector only)
+ - addition + (vector or scalar)
+ - subtraction - (vector or scalar)
+ - multiplication *(vector or scalar)
+ - division / (vector or scalar)
+ - negative - (vector only)
 
--Vector Functions:
-  -Magnitude
-  -Dot
-  -Angle
-  -Cross
-  -Rotate
-  -Normalize
-  -Resize
+- Vector Functions:
+  - Magnitude
+  - Dot
+  - Angle
+  - Cross
+  - Rotate
+  - Normalize
+  - Resize
 
 For functions that can only be used on a vector the function vectorCheck is called and will throw an error if its a matrix
 
@@ -89,16 +89,16 @@ Use default constructor that initializes the quaternion to zero : Quaternion<T> 
 
 Use the initializer constructor: Quaternion<T> myQ(1,2,3,4);
 
--Quaternion Operators:
-  -assignment = (quaternion only)
-  -equility == (quaternion only)
-  -addition + (quaternion or scalar)
-  -subtraction - (quaternion or scalar)
-  -multiplication *(quaternion or scalar)
-  -division / (scalar only)
-  -negative - (quaternion only)
+- Quaternion Operators:
+  - assignment = (quaternion only)
+  - equility == (quaternion only)
+  - addition + (quaternion or scalar)
+  - subtraction - (quaternion or scalar)
+  - multiplication *(quaternion or scalar)
+  - division / (scalar only)
+  - negative - (quaternion only)
 
--Quaternion Functions:
-  -Norm
-  -Conjugate
-  -Inverse
+- Quaternion Functions:
+  - Norm
+  - Conjugate
+  - Inverse
