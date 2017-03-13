@@ -10,6 +10,11 @@
 #include "matrix.h"
 #include <cmath>
 
+/// \author Jon Macey
+/// Modified by Kate Edge to include Maths Library
+/// \version 1.0
+/// \date 13/3/17 \n
+
 constexpr float TWO_PI= float(2*M_PI); //6.28318530717958647692   //360
 constexpr float PI=float(M_PI); //3.14159265358979323846       //180
 constexpr float PI2=float(M_PI/2.0); //1.57079632679489661923      //90

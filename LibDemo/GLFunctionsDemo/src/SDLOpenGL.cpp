@@ -1,6 +1,10 @@
 #include "SDLOpenGL.h"
 #include <iostream>
 
+/// \author Jon Macey
+/// \version 1.0
+/// \date 13/3/17 \n
+
 SDLOpenGL::SDLOpenGL(const std::string &_name, int _x, int _y,int _width, int _height)
 {
   m_name=_name;

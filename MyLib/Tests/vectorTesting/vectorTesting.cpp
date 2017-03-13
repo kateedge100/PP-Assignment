@@ -2,6 +2,9 @@
 #include "matrix.h"
 #include <gtest/gtest.h>
 
+/// Tests for vector constructors, operators anf functions
+/// Didnt repeat tests on initializer list and copy constructor as tested in matrixTesting.cpp
+/// The same applies for the addition and subtraction operators both for vectors and scalar numbers
 
 int main(int argc, char *argv[])
 {
@@ -18,24 +21,13 @@ TEST(VectorConstructors,DefaultConstructor)
 
 }
 
-TEST(VectorOperators,AdditionOperatorVector)
-{
-    Matrix<int,1,3> vec{1,2,3};
-    Matrix<int,1,3> vec2{2,3,4};
-    Matrix<int,1,3> add;
-    Matrix<int,1,3> result{3,5,7};
-
-    add=vec+vec2;
-
-    EXPECT_TRUE(add == result);
-}
 
 TEST(VectorOperators,DivisionOperatorRowVector)
 {
-    Matrix<float,1,3> vec{2,3,9};
-    Matrix<float,1,3> vec2{1,2,3};
+    Matrix<float,1,3> vec{2.0f,3.0f,9.0f};
+    Matrix<float,1,3> vec2{1.0f,2.0f,3.0f};
     Matrix<float,1,3> div;
-    Matrix<float,1,3> result{2,1.5,3};
+    Matrix<float,1,3> result{2.0f,1.5f,3.0f};
 
     div=vec/vec2;
 
@@ -44,10 +36,10 @@ TEST(VectorOperators,DivisionOperatorRowVector)
 
 TEST(VectorOperators,DivisionOperatorColVector)
 {
-    Matrix<float,3,1> vec{2,3,9};
-    Matrix<float,3,1> vec2{1,2,3};
+    Matrix<float,3,1> vec{2.0f,3.0f,9.0f};
+    Matrix<float,3,1> vec2{1.0f,2.0f,3.0f};
     Matrix<float,3,1> div;
-    Matrix<float,3,1> result{2,1.5,3};
+    Matrix<float,3,1> result{2.0f,1.5f,3.0f};
 
     div=vec/vec2;
 
@@ -56,22 +48,22 @@ TEST(VectorOperators,DivisionOperatorColVector)
 
 TEST(VectorOperators,DivisionOperatorVectorScalability)
 {
-    Matrix<float,1,100> vec;
+    Matrix<int,1,100> vec;
     for(int i = 1; i<101; i++)
     {
         vec(1,i)=i*4;
 
     }
 
-    Matrix<float,1,100> vec2;
+    Matrix<int,1,100> vec2;
     for(int i = 1; i<101; i++)
     {
         vec2(1,i)=i*8;
     }
 
-    Matrix<float,1,100> div;
+    Matrix<int,1,100> div;
 
-    Matrix<float,1,100> result;
+    Matrix<int,1,100> result;
     for(int i = 1; i<101; i++)
     {
         result(1,i)=2;
@@ -99,8 +91,8 @@ TEST(VectorFunctions,ColVectorMagnitude)
 
 TEST(VectorFunctions,NormalizeVector)
 {
-    Matrix<float,3,1> vec{4,3,0};
-    Matrix<float,3,1> result{0.8,0.6,0};
+    Matrix<float,3,1> vec{4.0f,3.0f,0.0f};
+    Matrix<float,3,1> result{0.8f,0.6f,0.0f};
 
     EXPECT_TRUE(vec.normalizeVector()==result);
 
@@ -138,11 +130,6 @@ TEST(VectorFunctions,VectorCrossProductOutofRange)
 {
     Matrix<int,1,2> vec{2,3};
     Matrix<int,1,2> vec2{5,6};
-    Matrix<int,1,2> cross;
-    Matrix<int,1,2> result{-3,6};
-
-    //cross=vec.cross(vec2);
-
 
     EXPECT_THROW(vec.cross(vec2),std::out_of_range);
 
@@ -190,14 +177,14 @@ TEST(VectorFunctions,Row3DVectorDotProduct)
 
 TEST(VectorFunctions,VectorDotProductScalability)
 {
-    Matrix<float,1,100> vec;
+    Matrix<int,1,100> vec;
     for(int i = 1; i<101; i++)
     {
         vec(1,i)=1;
 
     }
 
-    Matrix<float,1,100> vec2;
+    Matrix<int,1,100> vec2;
     for(int i = 1; i<101; i++)
     {
         vec2(1,i)=4;
@@ -227,10 +214,20 @@ TEST(VectorFunctions,Col2DAngle)
 
 }
 
+
 TEST(VectorFunctions,Row3DAngle)
 {
     Matrix<int,1,3> vec{4,0,7};
     Matrix<int,1,3> vec2{-2,1,3};
+
+    EXPECT_NEAR(vec.angle(vec2) == 64.4725, vec.angle(vec2) == 64.4724,0.0001 );
+
+}
+
+TEST(VectorFunctions,Col3DAngle)
+{
+    Matrix<int,3,1> vec{4,0,7};
+    Matrix<int,3,1> vec2{-2,1,3};
 
     EXPECT_NEAR(vec.angle(vec2) == 64.4725, vec.angle(vec2) == 64.4724,0.0001 );
 

@@ -2,7 +2,7 @@
 #include "quaternion.h"
 #include <gtest/gtest.h>
 
-
+/// Tests for quaternion constructors, operators and functions.
 
 int main(int argc, char *argv[])
 {
@@ -35,6 +35,36 @@ TEST(QuaternionConstructors,CopyConstructor)
     q2=q;
 
     EXPECT_TRUE(q2 == result);
+
+}
+
+TEST(QuaternionOperators,AssignmentOperatorQuaternion)
+{
+    Quaternion<int> q(0,2,3,4);
+    Quaternion<int> q2;
+    Quaternion<int> result(0,2,3,4);
+
+    q2=q;
+
+    EXPECT_TRUE(q2 == result);
+
+}
+
+TEST(QuaternionOperators,EquilityOperatorQuaternionTrue)
+{
+    Quaternion<int> q(0,2,3,4);
+    Quaternion<int> result(0,2,3,4);
+
+    EXPECT_TRUE(q == result);
+
+}
+
+TEST(QuaternionOperators,EquilityOperatorQuaternionFalse)
+{
+    Quaternion<int> q(0,2,3,4);
+    Quaternion<int> result(0,2,3,5);
+
+    EXPECT_FALSE(q == result);
 
 }
 
@@ -99,10 +129,10 @@ TEST(QuaternionOperators,NegativeOperatorScalar)
 
 TEST(QuaternionOperators,MultiplyOperatorQuaternion)
 {
-    Quaternion<float> q(1,0,1,0);
-    Quaternion<float> q2(1,0.5,0.5,0.75);
+    Quaternion<float> q(1.0f,0.0f,1.0f,0);
+    Quaternion<float> q2(1.0f,0.5f,0.5f,0.75f);
     Quaternion<float> mult;
-    Quaternion<float> result(0.5,1.25,1.5,0.25);
+    Quaternion<float> result(0.5f,1.25f,1.5f,0.25f);
 
     mult=q*q2;
 
@@ -121,8 +151,8 @@ TEST(QuaternionOperators,MultiplyOperatorScalar)
 
 TEST(QuaternionOperators,DivideOperatorScalar)
 {
-    Quaternion<float> q(9,13,4,7);
-    Quaternion<float> result(2.25,3.25,1,1.75);
+    Quaternion<float> q(9.0f,13.0f,4.0f,7.0f);
+    Quaternion<float> result(2.25f,3.25f,1.0f,1.75f);
 
     EXPECT_TRUE(q/4 == result);
 
@@ -130,15 +160,35 @@ TEST(QuaternionOperators,DivideOperatorScalar)
 
 TEST(QuaternionOperators,DivideOperatorZero)
 {
-    Quaternion<float> q(0,1,2,3);
+    Quaternion<int> q(0,1,2,3);
 
     EXPECT_THROW(q/0 ,std::out_of_range);
 
 }
 
+TEST(QuaternionFunction,SetDataFunction)
+{
+    Quaternion<int> q(0,2,4,0);
+
+    q.setData("b",3);
+
+
+    EXPECT_TRUE(q.getData("b") == 3);
+
+}
+
+TEST(QuaternionFunction,GetDataFunction)
+{
+    Quaternion<int> q(0,3,4,0);
+
+
+    EXPECT_TRUE(q.getData("b") == 3);
+
+}
+
 TEST(QuaternionFunction,NormFunction)
 {
-    Quaternion<float> q(0,3,4,0);
+    Quaternion<int> q(0,3,4,0);
 
 
     EXPECT_TRUE(q.norm() == 5);
@@ -147,8 +197,8 @@ TEST(QuaternionFunction,NormFunction)
 
 TEST(QuaternionFunction,NormalizeFunction)
 {
-    Quaternion<float> q(0,3,4,0);
-    Quaternion<float> result(0,0.6,0.8,0);
+    Quaternion<float> q(0.0f,3.0f,4.0f,0.0f);
+    Quaternion<float> result(0.0f,0.6f,0.8f,0.0f);
 
 
     EXPECT_TRUE(q.normalize() == result);
@@ -157,8 +207,8 @@ TEST(QuaternionFunction,NormalizeFunction)
 
 TEST(QuaternionFunction,NormalizeFunctionZero)
 {
-    Quaternion<float> q(0,0,0,0);
-    Quaternion<float> result(0,0,0,0);
+    Quaternion<float> q(0.0f,0.0f,0.0f,0.0f);
+    Quaternion<float> result(0.0f,0.0f,0.0f,0.0f);
 
 
     EXPECT_TRUE(q.normalize() == result);
@@ -167,41 +217,32 @@ TEST(QuaternionFunction,NormalizeFunctionZero)
 
 TEST(QuaternionFunction,ConjugateFunction)
 {
-    Quaternion<float> q(5,27,83,45);
-    Quaternion<float> result(5,-27,-83,-45);
+    Quaternion<int> q(5,27,83,45);
+    Quaternion<int> result(5,-27,-83,-45);
 
 
     EXPECT_TRUE(q.conjugate() == result);
 
 }
 
-// fix inverse -0 error
-//TEST(QuaternionFunction,InverseFunction)
-//{
-//    Quaternion<float> q(1.0f,0.0f,1.0f,0.0f);
-//    Quaternion<float> q2;
-//    Quaternion<float> result(0.5f,0.0f,-0.5f,0.0f);
-
-
-////    q2=q.inverse();
-////    q.print();
-
-
-//    EXPECT_TRUE(q.inverse() == result );
-
-//}
 
 TEST(QuaternionFunction,InverseFunction)
 {
 
-    Quaternion<float> q(1.0f,2.0f,-1.0f,-3.0f);
-    Quaternion<float> q2;
-    Quaternion<float> error(0.00001f,0.00001f,0.00001f,0.00001f);
-    Quaternion<float> result(1.0f/15.0f,-2.0f/15.0f,1.0f/15.0f,3.0f/15.0f);
+    Quaternion<float> q(0.0f,4.0f,0.0f,3.0f);
+    Quaternion<float> result(0.0f,-4.0f/25.0f,0.0f,-3.0f/25.0f);
 
+    EXPECT_TRUE(q.inverse() == result);
 
+}
 
-    EXPECT_TRUE(q.inverse()==result);
+TEST(QuaternionFunction,InverseFunctionZero)
+{
+
+    Quaternion<float> q(0.0f,0.0f,0.0f,0.0f);
+    Quaternion<float> result(0.0f,0.0f,0.0f,0.0f);
+
+    EXPECT_TRUE(q.inverse() == result);
 
 }
 

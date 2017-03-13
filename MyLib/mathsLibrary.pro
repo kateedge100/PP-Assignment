@@ -13,4 +13,4 @@ HEADERS += \
 
 TARGET=$$PWD/lib/myLib
 
-OTHER_FILES += README.md
+OTHER_FILES += $$PWD/../README.md

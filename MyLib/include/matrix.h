@@ -8,7 +8,7 @@
 
 /// \author Kate Edge
 /// \version 1.0
-/// \date 15/3/17 \n
+/// \date 13/3/17 \n
 
 
 template <typename T, size_t ROWS=0, size_t COLS=0>
@@ -51,13 +51,10 @@ public:
 
 
     // read only returns number of rows
-    const int* rows() const { return m_rows; }
-    // accessible number of rows
-    int getRows(){return m_rows;}
+    const int getRows() const { return m_rows; }
     // read only returns number of cols
-    const int* cols() const { return m_cols; }
-    // accessably number of cols
-    int getCols(){return m_cols;}
+    const int getCols() const { return m_cols; }
+
 
     // read only data
     const T* data(int _row, int _col) const { return m_data[_row][_col]; }
@@ -108,14 +105,15 @@ public:
     operator* ( Matrix<T,COLS,N>& _rhs);
     // inverses a matrix
     Matrix& inverse();
-    // determinant of a matrix
-    T determinant();
-    // minor of a matrix
-    Matrix&  minorMatrix(int _row, int _col);
     // transposes matrix
     Matrix& transpose();
     // tests if matrix is orthogonal
     bool orthogonal();
+    // determinant of a matrix
+    T determinant();
+    // minor of a matrix
+    Matrix&  minorMatrix(int _row, int _col);
+
 
 
     /// Vector only methods
@@ -242,18 +240,21 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::operator= (const Matrix<T,ROWS,COLS>&
 template <typename T, size_t ROWS, size_t COLS>
 bool Matrix< T,ROWS,COLS>::operator== (const Matrix<T,ROWS,COLS>& _rhs)
 {
+  bool equil = true;
+
   for(int i = 0; i < m_rows; i ++)
   {
     for(int j = 0; j < m_cols; j ++)
     {
       if(m_data[i][j]!=_rhs.m_data[i][j])
       {
-          return false;
+        equil= false;
       }
+
     }
   }
 
-  return true;
+  return equil;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1054,8 +1055,7 @@ Matrix<T,ROWS,COLS>& Matrix< T,ROWS,COLS>::inverse()
 /// @brief returns the transpose version of a matrix
 template <typename T, size_t ROWS, size_t COLS>
 Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
-{
-  std::cout<<"transpose \n";
+{ 
 
   T tmp[COLS][ROWS];
 
@@ -1063,38 +1063,27 @@ Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
   {
     for(int j = 0;j< ROWS;j++)
     {
-      tmp[i][j]=0;
-      std::cout<<tmp[i][j]<<" ";
-    }
-      std::cout<<" tmp \n";
+      tmp[i][j]=0;      
+    }      
   }
 
   for(int i = 0; i< COLS; i++)
   {
     for(int j = 0; j < ROWS; j++)
     {
-      tmp[i][j]= m_data[j][i];
-      std::cout<<tmp[i][j]<<" ";
+      tmp[i][j]= m_data[j][i];      
     }
-    std::cout<<" assigned \n";
   }
 
+  // resize matrix/vector to have reversed number of cols and rows
   resize(COLS,ROWS);
-
-  std::cout<<m_rows<<" m_rows resized \n";
-  std::cout<<m_cols<<" m_colss resized \n";
-
-  print();
 
   for(int i = 0; i<m_rows; i++)
   {
     for( int j = 0; j<m_cols; j++)
     {
       m_data[i][j]=tmp[i][j];
-      std::cout<<i<<j<<m_data[i][j]<<" m_data resized \n";
-      std::cout<<m_data[0][2]<<" correct this \n";
     }
-    std::cout<<m_data[0][2]<<" correct this \n";
   }
 
   return *this;
@@ -1105,14 +1094,30 @@ Matrix<T,ROWS, COLS>& Matrix< T,ROWS,COLS>::transpose()
 template <typename T, size_t ROWS, size_t COLS>
 bool Matrix< T,ROWS,COLS>::orthogonal()
 {
-  if(inverse()==transpose())
+  // must be a square matrix to be orthogonal
+  if(m_rows != m_cols)
+    {
+      return false;
+    }
+
+  // temp matrices to store values of transpose and inverse
+  Matrix<T,ROWS,COLS> tmp;
+  Matrix<T,ROWS,COLS> tmp2;
+
+  tmp = transpose();
+
+  tmp2 =inverse();
+
+  bool orth = false;
+
+  if(tmp == tmp2)
   {
-    return true;
+    orth= true;
   }
-  else
-  {
-    return false;
-  }
+
+
+  return orth;
+
 
 }
 
@@ -1280,73 +1285,6 @@ void Matrix< T,ROWS,COLS>::resize(int _rows, int _cols)
     }
 
   }
-
-//    T tmp[m_cols][m_ros];
-
-//    for(int i = 0;i<m_rows;i++)
-//       {
-//           for(int j = 0;j< m_cols;j++)
-//           {
-
-//               tmp[i][j]=0;
-
-//           }
-
-//       }
-
-//    for(int i = 0;i<m_rows;i++)
-//       {
-//           for(int j = 0;j< m_cols;j++)
-//           {
-
-//               tmp[i][j]=m_data[i][j];
-//               std::cout<<tmp[i][j]<<" resize tmp \n";
-
-//           }
-
-//       }
-
-
-    //std::cout<<m_data[2][0]<<"\n";
-    //std::cout<<m_cols;
-    //m_data[0][3]=0;
-
-//    for(int i = 0;i<m_rows;i++)
-//       {
-//           for(int j = 0;j< m_cols;j++)
-//           {
-
-//               m_data[i][j]=tmp[j][i];
-//               std::cout<<m_data[i][j]<<" resize new element \n";
-//           }
-
-//       }
-
-
-//    // initialize new column elements to zero
-//    for(int i = 0;i<m_rows;i++)
-//    {
-//        for(int j = m_cols;j< _cols;j++)
-//        {
-//            std::cout<<m_data[1][0]<<"\n";
-//            //std::cout<<i<<" "<<j<<"\n";
-//            //m_data[i][j]=0;
-//            std::cout<< i<<j<<" element "<<m_data[i][j]<<" new element \n";
-//        }
-
-//    }
-
-//    // initialize new row elements to zero
-//    for(int i = m_rows;i<_rows;i++)
-//    {
-//        for(int j = 0;j< _cols;j++)
-//        {
-//            //m_data[i][j]=0;
-//            std::cout<< i<<j<<" element "<<m_data[i][j]<<" new element \n";
-//        }
-
-//    }
-
 
 }
 

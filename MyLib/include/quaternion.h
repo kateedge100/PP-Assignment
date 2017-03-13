@@ -3,12 +3,14 @@
 #include <complex>
 #include "matrix.h"
 
+/// \author Kate Edge
+/// \version 1.0
+/// \date 13/3/17 \n
 
 template <typename T>
 
 /// \class Quaternions
 /// \brief Creates quaternions using a template type and applies a variety of operations and functions to them
-///
 class Quaternion
 {
 private:
@@ -29,8 +31,10 @@ public:
     // copy constructor
     Quaternion(const Quaternion<T>& _rhs);
 
-    // returns a,b,c or d
-    T getData(const char *_data);
+    // access data
+    void setData(char *_data, T _value);
+    // returns a,b,c or d (read only)
+    const T getData(const char *_data);
 
 
     // assignment operator
@@ -107,22 +111,32 @@ Quaternion<T>::Quaternion(const Quaternion<T> &_rhs)
 }
 
 //----------------------------------------------------------------------------------------------
-/// @brief Returns the value of m_a,m_b,m_c or m_d
+/// @brief Accesses  m_a,m_b,m_c or m_d and changes value
+/// param[in] _data, the data to access
+/// param[in] _value, the value to change the data to
+template <typename T>
+void Quaternion<T>::setData(char* _data, T _value)
+{
+
+  if(_data == "a") {m_a = _value;}
+  if(_data == "b") {m_b = _value;}
+  if(_data == "c") {m_c = _value;}
+  if(_data == "d") {m_d = _value;}
+
+}
+
+//----------------------------------------------------------------------------------------------
+/// @brief Returns the value of m_a,m_b,m_c or m_d (read only)
 /// param[in] _data, the value to return
 template <typename T>
-T Quaternion<T>::getData(const char* _data)
+const T Quaternion<T>::getData(const char* _data)
 {
-  switch(_data)
-  {
-    case "a": m_a=_data;
-        return m_a;
-    case "b": m_b=_data;
-        return m_b;
-    case "c": m_c=_data;
-        return m_c;
-    case "d": m_d=_data;
-        return m_d;
-  }
+
+  if(_data == "a") {return m_a;}
+  if(_data == "b") {return m_b;}
+  if(_data == "c") {return m_c;}
+  if(_data == "d") {return m_d;}
+
 }
 
 //----------------------------------------------------------------------------------------------

@@ -1,0 +1,6 @@
+<map id="Matrix::vectorCheck" name="Matrix::vectorCheck">
+<area shape="rect" id="node2" href="$class_matrix.html#a7b804f26d10a898648692ce9894cb8c4" title="Division operator for vector and vector param[in] _rhs, the vector that the will be used to divide th..." alt="" coords="189,5,304,32"/>
+<area shape="rect" id="node3" href="$class_matrix.html#a1bba10b3aa1271b2b280ca230a3dda6f" title="The dot product of the given vector and another vector passed in as a parameter param[in] _rhs..." alt="" coords="206,56,287,83"/>
+<area shape="rect" id="node4" href="$class_matrix.html#a8f0d9f17a6b2df532ec1aad9bea321aa" title="Returns the angle between two vectors param[in] _rhs, the angle is found between the applied to vecto..." alt="" coords="199,107,294,133"/>
+<area shape="rect" id="node5" href="$class_matrix.html#a0d6ce17196063adef5978d4e57aa82e4" title="Finds the cross product of two vectors param[in] the second vector that is used to find the cross pro..." alt="" coords="200,157,293,184"/>
+</map>

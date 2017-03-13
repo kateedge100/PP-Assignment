@@ -1,0 +1,4 @@
+<map id="Matrix::angle" name="Matrix::angle">
+<area shape="rect" id="node2" href="$class_matrix.html#a284bc8760e56020085b936dc0ad935e7" title="Vector only methods. " alt="" coords="156,5,279,32"/>
+<area shape="rect" id="node3" href="$class_matrix.html#a70ca8fcbb0226f3723f17c71e6b05df9" title="Checks that function is being applied to a matrix not a vector, throws error if it is a vector..." alt="" coords="150,56,285,83"/>
+</map>

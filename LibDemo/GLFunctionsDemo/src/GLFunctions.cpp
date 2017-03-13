@@ -3,6 +3,11 @@
 #include "matrix.h"
 #include <cmath>
 
+/// \author Jon Macey
+/// Modified by Kate Edge to include Maths Library
+/// \version 1.0
+/// \date 13/3/17 \n
+
 void GLFunctions::cube(GLfloat _w, GLfloat _h, GLfloat _d)
 {
   // assume the  cube centered at the origin

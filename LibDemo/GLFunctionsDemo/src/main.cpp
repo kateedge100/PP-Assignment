@@ -13,7 +13,10 @@
 #include <GLFunctions.h>
 #include "SDLOpenGL.h"
 
-/// All header and source files originally written by Jon Macey and edited by Kate Edge to work with the myLib maths library
+/// \author Jon Macey
+/// Modified by Kate Edge to include Maths Library
+/// \version 1.0
+/// \date 13/3/17 \n
 
 
 // function to init the basic OpenGL scene for this demo

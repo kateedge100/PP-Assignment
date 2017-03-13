@@ -3,6 +3,11 @@
 #include <SDL.h>
 #include <string>
 
+/// \author Jon Macey
+/// Modified by Kate Edge to include Maths Library
+/// \version 1.0
+/// \date 13/3/17 \n
+
 class SDLOpenGL
 {
   public :

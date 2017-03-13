@@ -1,0 +1,26 @@
+var class_quaternion =
+[
+    [ "Quaternion", "class_quaternion.html#abcc01358aada56ea5f0db4da18aaf77d", null ],
+    [ "Quaternion", "class_quaternion.html#a4ddf58b3c96015e4d8ec849b40071dab", null ],
+    [ "Quaternion", "class_quaternion.html#aa946e04e2529deedc140476966a526fc", null ],
+    [ "conjugate", "class_quaternion.html#ab6ddaac603534f27b080654f98254450", null ],
+    [ "getData", "class_quaternion.html#acf6970c42b2dcb5a7db35b1d66fa52e5", null ],
+    [ "inverse", "class_quaternion.html#a2ad04e0c384bedc175d75c6b18e80520", null ],
+    [ "norm", "class_quaternion.html#a374c3555a12df9ce9b34cfd6681a5025", null ],
+    [ "normalize", "class_quaternion.html#a911f278dcac2665490b8d9ce6b7cedec", null ],
+    [ "operator*", "class_quaternion.html#aad0e85cdce675eb7b5641aac0c0f1776", null ],
+    [ "operator*", "class_quaternion.html#af6d9e4c739fc3ce15afcb740649dc2d5", null ],
+    [ "operator+", "class_quaternion.html#a0195f2f3a7de3a8e86663644324c171d", null ],
+    [ "operator+", "class_quaternion.html#ad4d235dd9e29813efc919bd7c2aeaa8f", null ],
+    [ "operator-", "class_quaternion.html#a474094e02c840514a00df2536d08f21a", null ],
+    [ "operator-", "class_quaternion.html#ad92b6798fd231acac2e8136c3c813a99", null ],
+    [ "operator-", "class_quaternion.html#a68e69787a7968877228c93bedc1410a2", null ],
+    [ "operator/", "class_quaternion.html#af3678e3b41dc65894dc4b20e3a8d26e2", null ],
+    [ "operator=", "class_quaternion.html#a6e975e2ad6f4d53957cd01a0b445d159", null ],
+    [ "operator==", "class_quaternion.html#a76bde1736f8a57a25a39378aff4a8c9e", null ],
+    [ "print", "class_quaternion.html#a363382a929b85cb424582deb133324c5", null ],
+    [ "m_a", "class_quaternion.html#aeadddd930229538e3b43b744463c6b34", null ],
+    [ "m_b", "class_quaternion.html#ae5ee0f7d75cd3cd47f5a541130c4345e", null ],
+    [ "m_c", "class_quaternion.html#ab647fa9c93057cbc934c7c543dfc2c3d", null ],
+    [ "m_d", "class_quaternion.html#aa2c41b32be341df872b3ed4c85b29f3c", null ]
+];
